@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <include src="components/head-common.html"></include>
+    <title>註冊 | TGAI - 中華煤氣統一 AI 平台</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'tg-cyan': '#00F2FF',
+                        'tg-emerald': '#00F5A0',
+                        'bg-deep': '#020406',
+                        'bg-surface': '#080C12',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 確保字體全局統一 */
+        * {
+            font-family: 'Noto Sans TC', sans-serif !important;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            padding: 2rem 0;
+        }
+
+        /* 背景裝飾與登錄頁保持一致 */
+        .ambient-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.08) 0%, rgba(0, 245, 160, 0.05) 50%, transparent 100%);
+            z-index: -1;
+            filter: blur(80px);
+        }
+
+        .register-container {
+            width: 100%;
+            max-width: 640px;
+            padding: 1rem;
+            z-index: 10;
+        }
+
+        /* 輸入框自定義樣式 */
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .input-group {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.4);
+            border: none;
+            border-bottom: 1px solid var(--border-white);
+            border-radius: 0;
+            padding: 8px 0;
+            color: white;
+            transition: all 0.3s ease;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-field:focus {
+            border-bottom-color: var(--tg-cyan);
+            background: transparent;
+        }
+
+        .input-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+        }
+
+        .required-mark {
+            color: #ff4d4f;
+            margin-right: 4px;
+        }
+
+        /* 密碼切換按鈕 */
+        .password-toggle {
+            position: absolute;
+            right: 0;
+            bottom: 8px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 4px;
+            transition: color 0.3s;
+        }
+
+        .password-toggle:hover {
+            color: var(--tg-cyan);
+        }
+
+        /* 下拉選單樣式 */
+        select.input-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394A3B8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right center;
+            background-size: 16px;
+            padding-right: 24px;
+        }
+
+        select option {
+            background-color: var(--bg-surface);
+            color: white;
+        }
+
+        /* 驗證碼區塊 */
+        .captcha-box {
+            height: 36px;
+            width: 100px;
+            background: #fff;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        /* 錯誤訊息 - 放在 input-group 內部 */
+        .error-message {
+            grid-column: 2;
+            color: #ff4d4f;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .error-message {
+                grid-column: 1;
+            }
+        }
+
+        /* 標籤頁樣式 */
+        .tab-btn {
+            position: relative;
+            padding: 0.75rem 0;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--tg-cyan);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--tg-cyan);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景裝飾 -->
+    <div class="ambient-glow"></div>
+    <div class="grid-matrix"></div>
+
+    <div class="register-container">
+        <!-- 頂部標題 -->
+        <h1 class="text-3xl font-bold text-center text-white mb-12 tracking-wide">歡迎使用中華煤氣統一Ai平台</h1>
+
+        <div class="neu-card p-8 md:p-12 relative overflow-hidden">
+            <!-- 頂部裝飾條 -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-tg-cyan to-tg-emerald opacity-50"></div>
+
+            <!-- 語言選擇 (右上角) -->
+            <div class="absolute top-6 right-8">
+                <select class="bg-transparent border border-white/20 rounded px-2 py-1 text-xs text-slate-200 outline-none focus:border-tg-cyan transition-colors">
+                    <option value="zh-HK">繁體</option>
+                    <option value="zh-CN">简体</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
+            
+            <!-- 註冊類型切換 -->
+            <div class="flex justify-center gap-12 mb-12 border-b border-white/5">
+                <button class="tab-btn active" id="userTab">用戶註冊</button>
+                <button class="tab-btn" id="providerTab">服務商註冊</button>
+            </div>
+
+            <!-- 當前表單標題 -->
+            <h2 class="text-center text-lg font-bold text-white mb-10" id="formTitle">用戶註冊</h2>
+
+            <!-- 註冊表單 -->
+            <form id="registerForm" novalidate>
+                <!-- 手機號 -->
+                <div class="input-group">
+                    <label for="phone" class="input-label"><span class="required-mark">*</span>手機號</label>
+                    <div class="w-full">
+                        <input type="tel" id="phone" name="phone" class="input-field" placeholder="請輸入手機號" required autocomplete="tel">
+                        <div id="phoneError" class="error-message">請輸入有效的手機號碼</div>
+                    </div>
+                </div>
+
+                <!-- 電子郵件 -->
+                <div class="input-group">
+                    <label for="email" class="input-label"><span class="required-mark">*</span>電子郵件</label>
+                    <div class="w-full">
+                        <input type="email" id="email" name="email" class="input-field" placeholder="請輸入電子郵件" required autocomplete="email">
+                        <div id="emailError" class="error-message">請輸入有效的電子郵件地址</div>
+                    </div>
+                </div>
+
+                <!-- 登錄密碼 -->
+                <div class="input-group">
+                    <label for="password" class="input-label"><span class="required-mark">*</span>登錄密碼</label>
+                    <div class="relative w-full">
+                        <input type="password" id="password" name="password" class="input-field" placeholder="請輸入登錄密碼" required>
+                        <button type="button" class="password-toggle" data-target="password">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                        <div id="passwordError" class="error-message">密碼至少需 8 位字符</div>
+                    </div>
+                </div>
+
+                <!-- 確認登錄密碼 -->
+                <div class="input-group">
+                    <label for="confirmPassword" class="input-label"><span class="required-mark">*</span>確認登錄密碼</label>
+                    <div class="relative w-full">
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="input-field" placeholder="請確認登錄密碼" required>
+                        <button type="button" class="password-toggle" data-target="confirmPassword">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                        <div id="confirmPasswordError" class="error-message">兩次輸入的密碼不一致</div>
+                    </div>
+                </div>
+
+                <!-- 所屬企業 -->
+                <div class="input-group">
+                    <label for="company" class="input-label"><span class="required-mark">*</span>所屬企業</label>
+                    <div class="w-full">
+                        <select id="company" name="company" class="input-field" required>
+                            <option value="" disabled selected>請選擇所屬企業</option>
+                            <option value="towngas">中華煤氣 (Towngas)</option>
+                            <option value="subsidiary">集團子公司</option>
+                            <option value="partner">合作夥伴</option>
+                        </select>
+                        <div id="companyError" class="error-message">請選擇所屬企業</div>
+                    </div>
+                </div>
+
+                <!-- 姓名 -->
+                <div class="input-group">
+                    <label for="name" class="input-label"><span class="required-mark">*</span>姓名</label>
+                    <div class="w-full">
+                        <input type="text" id="name" name="name" class="input-field" placeholder="請輸入姓名" required>
+                        <div id="nameError" class="error-message">請輸入姓名</div>
+                    </div>
+                </div>
+
+                <!-- 所屬部門 -->
+                <div class="input-group">
+                    <label for="department" class="input-label"><span class="required-mark">*</span>所屬部門</label>
+                    <div class="w-full">
+                        <input type="text" id="department" name="department" class="input-field" placeholder="請輸入所屬部門" required>
+                        <div id="departmentError" class="error-message">請輸入所屬部門</div>
+                    </div>
+                </div>
+
+                <!-- 圖形驗證碼 -->
+                <div class="input-group">
+                    <label for="captcha" class="input-label"><span class="required-mark">*</span>圖形驗證碼</label>
+                    <div class="w-full">
+                        <div class="flex gap-4">
+                            <input type="text" id="captcha" name="captcha" class="input-field" placeholder="請輸入圖形驗證碼" required>
+                            <div class="captcha-box flex-shrink-0" title="點擊刷新">
+                                <img src="https://api.dicebear.com/7.x/initials/svg?seed=TGAI&backgroundColor=ffffff" alt="Captcha" class="h-full">
+                            </div>
+                        </div>
+                        <div id="captchaError" class="error-message">請輸入正確的圖形驗證碼</div>
+                    </div>
+                </div>
+
+                <!-- 短信驗證碼 -->
+                <div class="input-group">
+                    <label for="sms" class="input-label"><span class="required-mark">*</span>短信驗證碼</label>
+                    <div class="w-full">
+                        <div class="flex gap-4">
+                            <input type="text" id="sms" name="sms" class="input-field" placeholder="請輸入短信驗證碼" required>
+                            <button type="button" id="getSms" class="text-tg-cyan text-sm font-medium whitespace-nowrap hover:text-tg-emerald transition-colors">獲取驗證碼</button>
+                        </div>
+                        <div id="smsError" class="error-message">請輸入短信驗證碼</div>
+                    </div>
+                </div>
+
+                <!-- 註冊按鈕 -->
+                <div class="mt-12">
+                    <button type="submit" class="btn-action w-full py-4 rounded-xl text-sm font-bold tracking-widest transition-all">
+                        註冊
+                    </button>
+                </div>
+
+                <!-- 登錄連結 -->
+                <div class="text-center mt-8">
+                    <a href="login.html" class="text-[13px] font-medium text-tg-cyan hover:text-tg-emerald transition-colors underline-offset-4 hover:underline">
+                        已有帳號？立即登錄 >
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- 底部輔助連結 -->
+        <div class="mt-8 flex justify-center gap-6 text-[13px] font-bold tracking-widest text-slate-600 uppercase">
+            <a href="#" class="hover:text-slate-200 transition-colors">隱私政策</a>
+            <span class="opacity-20">|</span>
+            <a href="#" class="hover:text-slate-200 transition-colors">服務條款</a>
+            <span class="opacity-20">|</span>
+            <a href="#" class="hover:text-slate-200 transition-colors">幫助中心</a>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const registerForm = document.getElementById('registerForm');
+            const userTab = document.getElementById('userTab');
+            const providerTab = document.getElementById('providerTab');
+            const formTitle = document.getElementById('formTitle');
+            const getSmsBtn = document.getElementById('getSms');
+
+            // 標籤頁切換
+            [userTab, providerTab].forEach(tab => {
+                tab.addEventListener('click', () => {
+                    [userTab, providerTab].forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    formTitle.textContent = tab.textContent;
+                });
+            });
+
+            // 密碼顯示切換
+            document.querySelectorAll('.password-toggle').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const inputId = btn.getAttribute('data-target');
+                    const input = document.getElementById(inputId);
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    
+                    // 切換圖標
+                    if (type === 'text') {
+                        btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"></path></svg>`;
+                    } else {
+                        btn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`;
+                    }
+                });
+            });
+
+            // 短信驗證碼倒計時
+            getSmsBtn.addEventListener('click', () => {
+                const phone = document.getElementById('phone').value;
+                if (!phone) {
+                    showError('phone', '請先輸入手機號');
+                    return;
+                }
+                
+                let countdown = 60;
+                getSmsBtn.disabled = true;
+                const timer = setInterval(() => {
+                    getSmsBtn.textContent = `${countdown}s 後重試`;
+                    countdown--;
+                    if (countdown < 0) {
+                        clearInterval(timer);
+                        getSmsBtn.disabled = false;
+                        getSmsBtn.textContent = '獲取驗證碼';
+                    }
+                }, 1000);
+            });
+
+            // 表單驗證
+            registerForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                let isValid = true;
+                
+                // 獲取所有必填項
+                const requiredFields = ['phone', 'email', 'password', 'confirmPassword', 'company', 'name', 'department', 'captcha', 'sms'];
+                
+                requiredFields.forEach(id => {
+                    const field = document.getElementById(id);
+                    if (!field.value) {
+                        showError(id);
+                        isValid = false;
+                    } else {
+                        hideError(id);
+                    }
+                });
+
+                // 郵件格式驗證
+                const emailField = document.getElementById('email');
+                if (emailField.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+                    showError('email', '請輸入有效的電子郵件地址');
+                    isValid = false;
+                }
+
+                // 密碼一致性檢查
+                if (isValid) {
+                    const pwd = document.getElementById('password').value;
+                    const confirmPwd = document.getElementById('confirmPassword').value;
+                    if (pwd !== confirmPwd) {
+                        showError('confirmPassword', '兩次輸入的密碼不一致');
+                        isValid = false;
+                    }
+                }
+
+                if (isValid) {
+                    const submitBtn = registerForm.querySelector('button[type="submit"]');
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`;
+                    
+                    setTimeout(() => {
+                        alert('註冊申請已提交，請等待管理員審核！');
+                        window.location.href = 'login.html';
+                    }, 2000);
+                }
+            });
+
+            function showError(id, msg) {
+                const field = document.getElementById(id);
+                const error = document.getElementById(id + 'Error');
+                field.style.borderBottomColor = '#ff4d4f';
+                error.style.display = 'block';
+                if (msg) error.textContent = msg;
+            }
+
+            function hideError(id) {
+                const field = document.getElementById(id);
+                const error = document.getElementById(id + 'Error');
+                field.style.borderBottomColor = 'var(--border-white)';
+                error.style.display = 'none';
+            }
+
+            // 輸入時清除錯誤
+            document.querySelectorAll('.input-field').forEach(input => {
+                input.addEventListener('input', () => hideError(input.id));
+            });
+        });
+    </script>
+</body>
+</html>

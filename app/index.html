@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>TGAI Mobile - 智能門戶 (iPhone 16 Pro Max)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Noto+Sans+HK:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-white: rgba(255, 255, 255, 0.08); /* 更細緻的邊框 */
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-bg: #010204;
+            --glass-bg: rgba(15, 23, 42, 0.4); /* 更透明的背景 */
+            --card-radius: 24px;
+            --nav-height: 72px;
+        }
+
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+            letter-spacing: 0.02em; /* 提升國際感 */
+        }
+
+        /* iPhone 16 Pro Max 尺寸模擬容器 */
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            background-color: var(--tg-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+            overflow-x: hidden;
+        }
+
+        .safe-area-top { padding-top: env(safe-area-inset-top); }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* 統一卡片樣式 - 國際化精修 */
+        .neu-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--card-radius);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neu-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+            transition: 0.6s;
+        }
+
+        .neu-card:active::before {
+            left: 100%;
+        }
+
+        .neu-card:active {
+            border-color: var(--tg-emerald);
+            transform: scale(0.98);
+            box-shadow: 0 0 40px rgba(0, 245, 160, 0.15);
+            background: rgba(20, 30, 50, 0.7);
+        }
+
+        /* 統一按鈕樣式 - 專業級質感 */
+        .btn-action {
+            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
+            color: #000;
+            font-weight: 600; /* 改為 600 以獲得更優雅的視覺 */
+            border-radius: 14px;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0, 242, 255, 0.15);
+        }
+        .btn-action:active { transform: scale(0.95); opacity: 0.9; }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-white);
+            color: #fff;
+            font-weight: 500;
+            border-radius: 14px;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+        .btn-glass:active { background: rgba(255, 255, 255, 0.08); transform: scale(0.95); }
+
+        /* 底部導航欄強化 - 懸浮膠囊設計 */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 400px;
+            z-index: 100;
+        }
+
+        .main-nav {
+            height: var(--nav-height);
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 12px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            padding: 8px 0;
+            min-width: 60px;
+        }
+
+        .nav-item.active {
+            color: var(--tg-cyan);
+        }
+
+        .nav-item svg {
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .nav-item.active svg {
+            transform: translateY(-2px);
+            filter: drop-shadow(0 0 12px rgba(0, 242, 255, 0.8));
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 4px;
+            height: 4px;
+            background: var(--tg-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--tg-cyan);
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 400; /* 改為常規字重 */
+            letter-spacing: 0.05em;
+        }
+
+        /* 導航項點擊回饋 */
+        .nav-item:active {
+            transform: scale(0.9);
+            opacity: 0.7;
+        }
+
+        /* 更多菜單彈窗精修 */
+        .menu-popover {
+            position: absolute;
+            bottom: calc(var(--nav-height) + 16px);
+            left: 0;
+            right: 0;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            padding: 12px;
+            display: grid;
+            grid-template-cols: repeat(2, 1fr);
+            gap: 10px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px) scale(0.95);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .menu-popover.active {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+
+        .menu-item:active {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(0.98);
+        }
+
+        /* 視力輔助 */
+        .text-helper { color: rgba(255, 255, 255, 0.45); }
+        .text-main { color: #FFFFFF; }
+
+        /* 內容揭示效果 */
+        .reveal-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: none;
+        }
+
+        .neu-card.active .reveal-content {
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 12px;
+            pointer-events: auto;
+        }
+
+        /* 進度條 */
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--tg-cyan), var(--tg-emerald));
+            border-radius: 2px;
+        }
+
+        /* 字體強化 */
+        .font-orbitron { font-family: 'Orbitron', sans-serif; }
+        .font-mono-code { font-family: 'JetBrains Mono', monospace; }
+        .text-gradient {
+            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 機器人懸浮按鈕 */
+        .robot-trigger {
+            position: fixed;
+            right: 20px;
+            bottom: calc(var(--nav-height) + 30px);
+            width: 60px;
+            height: 60px;
+            z-index: 100;
+            cursor: pointer;
+            filter: drop-shadow(0 0 15px rgba(0, 242, 255, 0.4));
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .robot-trigger:active { transform: scale(0.9); }
+
+        .robot-head {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid rgba(0, 242, 255, 0.3);
+            border-radius: 18px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .robot-eye-container {
+            display: flex;
+            gap: 12px;
+        }
+
+        .robot-eye {
+            width: 10px;
+            height: 10px;
+            background: var(--tg-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--tg-cyan);
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 45%, 55%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(0.1); }
+        }
+
+        /* Chatbot Lightbox */
+        .chatbot-lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .chatbot-lightbox.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .chatbot-content {
+            margin-top: auto;
+            height: 80vh;
+            background: #0f172a;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px 32px 0 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .chatbot-lightbox.active .chatbot-content {
+            transform: translateY(0);
+        }
+
+        .chatbot-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .message-bot {
+            background: rgba(255, 255, 255, 0.05);
+            color: #e2e8f0;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .message-user {
+            background: var(--tg-cyan);
+            color: #0f172a;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+            font-weight: 500;
+        }
+
+        .chatbot-input-area {
+            padding: 20px;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container flex flex-col">
+        <!-- 頂部搜索欄與 Logo -->
+        <header class="sticky top-0 z-50 bg-[#010204]/60 backdrop-blur-2xl safe-area-top border-b border-white/5">
+            <div class="px-5 h-16 flex items-center justify-between">
+                <!-- 左上角 Logo -->
+                <div class="flex items-center gap-3">
+                    <img src="../logo.png" alt="TGAI Logo" class="h-6 object-contain opacity-90">
+                    <div class="h-4 w-[1px] bg-white/10"></div>
+                    <span class="text-sm font-medium tracking-widest text-white/40 uppercase">Global</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 active:scale-90 transition-transform relative">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                        </svg>
+                        <span class="absolute top-2 right-2.5 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#010204]"></span>
+                    </button>
+                    <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-[#00F2FF] to-[#00F5A0] p-[1px]">
+                        <div class="w-full h-full rounded-full bg-[#010204] flex items-center justify-center overflow-hidden border border-white/10">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- 主內容區 -->
+        <main class="flex-1 overflow-y-auto pb-32 no-scrollbar" data-page="app-home">
+            
+            <!-- 頂部搜索區 -->
+            <section class="px-5 mt-6">
+                <div class="h-12 bg-white/5 border border-white/10 rounded-2xl flex items-center px-4 gap-3 focus-within:border-[#00F2FF]/50 transition-colors">
+                    <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                    <input type="text" placeholder="搜索模型、插件或知識庫..." class="bg-transparent border-none text-base focus:outline-none w-full text-white placeholder:text-slate-500">
+                </div>
+            </section>
+            <!-- 1. 集團工具總覽 -->
+            <section class="px-5 mt-8" data-section="tool-overview">
+                <h2 class="text-xl font-bold flex items-center gap-3 font-orbitron mb-8 text-white">
+                    集團工具總覽 
+                    <span class="h-1 w-12 bg-emerald-500 rounded-full"></span>
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 已接入模型 -->
+                    <div class="neu-card p-6 text-center flex flex-col justify-center min-h-[140px] group active:scale-95 transition-all">
+                        <p class="text-sm text-slate-200 uppercase tracking-widest mb-2 font-mono-code">已接入模型</p>
+                        <div class="stat-number text-gradient text-3xl">12</div>
+                        <p class="text-[13px] text-slate-400 mt-2">DeepSeek/千問/通義......</p>
+                    </div>
+                    <!-- Agents -->
+                    <div class="neu-card p-6 text-center flex flex-col justify-center min-h-[140px] group active:scale-95 transition-all">
+                        <p class="text-sm text-slate-200 uppercase tracking-widest mb-2 font-mono-code">Agents</p>
+                        <div class="stat-number text-gradient text-3xl">48</div>
+                        <p class="text-[13px] text-slate-400 mt-2">智能助理/數據專家/客服專家</p>
+                    </div>
+                    <!-- 插件 -->
+                    <div class="neu-card p-6 text-center flex flex-col justify-center min-h-[140px] group active:scale-95 transition-all">
+                        <p class="text-sm text-slate-200 uppercase tracking-widest mb-2 font-mono-code">插件</p>
+                        <div class="stat-number text-gradient text-3xl">100</div>
+                        <p class="text-[13px] text-slate-400 mt-2">聯網搜索/文檔解析/代碼執行</p>
+                    </div>
+                    <!-- 知識庫 -->
+                    <div class="neu-card p-6 text-center border-emerald-500/20 flex flex-col justify-center min-h-[140px] group active:scale-95 transition-all">
+                        <p class="text-sm text-slate-200 uppercase tracking-widest mb-2 font-mono-code">知識庫</p>
+                        <div class="stat-number text-emerald-400 text-2xl font-bold">開發中</div>
+                        <p class="text-[13px] text-slate-400 mt-2">開發中，敬請期待</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 已上線 -->
+            <section class="px-5 mt-10" data-section="online-models">
+                <div class="flex items-center justify-between mb-5">
+                    <h2 class="text-xl font-bold flex items-center gap-3 font-orbitron text-white">
+                        已上線 <span class="text-emerald-400 font-mono-code text-base ml-2">.NEW</span>
+                    </h2>
+                    <a href="#" class="text-[13px] font-bold text-slate-400 uppercase tracking-widest">查看更多工具 →</a>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 卡片 1 -->
+                    <div class="neu-card group active:scale-[0.98] transition-all cursor-pointer overflow-hidden" onclick="this.classList.toggle('active')">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-white mb-2 text-base leading-tight">通義千問3-文本生成大模型</h3>
+                            <p class="text-[13px] text-slate-400 leading-relaxed line-clamp-2 mb-0 transition-all duration-300 group-[.active]:mb-4 group-[.active]:line-clamp-none">Qwen3 支持思考/非思考雙模式切換，顯著強化了 Agent、MCP 及代碼執行能力。</p>
+                            
+                            <!-- 揭示內容 -->
+                            <div class="reveal-content border-t border-white/5 pt-4">
+                                <div class="space-y-3 mb-4">
+                                    <div>
+                                        <div class="flex justify-between text-[13px] mb-1.5">
+                                            <span class="text-slate-400">推理能力</span>
+                                            <span class="text-cyan-400 font-mono-code">95%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 95%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[13px] mb-1.5">
+                                            <span class="text-slate-400">中文理解</span>
+                                            <span class="text-cyan-400 font-mono-code">98%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 98%"></div></div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 py-2 rounded-xl btn-glass text-[13px] font-bold">詳細參數</button>
+                                    <button class="flex-1 py-2 btn-action rounded-xl text-[13px] font-bold">申請使用</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2 - Featured -->
+                    <div class="neu-card group active:scale-[0.98] transition-all cursor-pointer overflow-hidden border-emerald-500/30" onclick="this.classList.toggle('active')">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-[11px] font-mono-code text-emerald-400 uppercase font-bold px-1.5 py-0.5 bg-emerald-500/10 rounded border border-emerald-500/20">Featured</span>
+                            </div>
+                            <h3 class="font-bold text-white mb-2 text-base leading-tight">DeepSeek-V3 推理引擎</h3>
+                            <p class="text-[13px] text-slate-400 leading-relaxed line-clamp-2 mb-0 transition-all duration-300 group-[.active]:mb-4 group-[.active]:line-clamp-none">專為能源供應鏈優化，支持多維度決策鏈條分析與自動化管網管理。</p>
+                            
+                            <!-- 揭示內容 -->
+                            <div class="reveal-content border-t border-white/5 pt-4">
+                                <div class="space-y-3 mb-4">
+                                    <div>
+                                        <div class="flex justify-between text-[13px] mb-1.5">
+                                            <span class="text-slate-400">推理速度</span>
+                                            <span class="text-cyan-400 font-mono-code">+40%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 90%"></div></div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-[11px] mb-1.5">
+                                            <span class="text-slate-400">能源優化</span>
+                                            <span class="text-cyan-400 font-mono-code">92%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 92%"></div></div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 py-2 rounded-xl btn-glass text-[11px] font-bold">詳細參數</button>
+                                    <button class="flex-1 py-2 btn-action rounded-xl text-[11px] font-bold">立即部署</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3 -->
+                    <div class="neu-card group active:scale-[0.98] transition-all cursor-pointer overflow-hidden" onclick="this.classList.toggle('active')">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-white mb-2 text-sm leading-tight">視覺理解大模型 V2</h3>
+                            <p class="text-[11px] text-slate-400 leading-relaxed line-clamp-2 mb-0 transition-all duration-300 group-[.active]:mb-4 group-[.active]:line-clamp-none">全新升級的多模態視覺理解能力，支持圖像分析、OCR 識別與場景理解。</p>
+                            
+                            <!-- 揭示內容 -->
+                            <div class="reveal-content border-t border-white/5 pt-4">
+                                <div class="space-y-3 mb-4">
+                                    <div>
+                                        <div class="flex justify-between text-[11px] mb-1.5">
+                                            <span class="text-slate-400">圖像理解</span>
+                                            <span class="text-cyan-400 font-mono-code">92%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 92%"></div></div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 py-2 rounded-xl btn-glass text-[11px] font-bold">詳細參數</button>
+                                    <button class="flex-1 py-2 btn-action rounded-xl text-[11px] font-bold">申請使用</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 4 -->
+                    <div class="neu-card group active:scale-[0.98] transition-all cursor-pointer overflow-hidden" onclick="this.classList.toggle('active')">
+                        <div class="p-5">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <h3 class="font-bold text-white mb-2 text-sm leading-tight">代碼生成助手 Pro</h3>
+                            <p class="text-[11px] text-slate-400 leading-relaxed line-clamp-2 mb-0 transition-all duration-300 group-[.active]:mb-4 group-[.active]:line-clamp-none">專為開發者打造，支持多語言代碼生成、重構與智能補全。</p>
+                            
+                            <!-- 揭示內容 -->
+                            <div class="reveal-content border-t border-white/5 pt-4">
+                                <div class="space-y-3 mb-4">
+                                    <div>
+                                        <div class="flex justify-between text-[11px] mb-1.5">
+                                            <span class="text-slate-400">代碼準確率</span>
+                                            <span class="text-cyan-400 font-mono-code">96%</span>
+                                        </div>
+                                        <div class="progress-bar h-1"><div class="progress-fill" style="width: 96%"></div></div>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <button class="flex-1 py-2 rounded-xl btn-glass text-[11px] font-bold">詳細參數</button>
+                                    <button class="flex-1 py-2 btn-action rounded-xl text-[11px] font-bold">申請使用</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 待上線 -->
+            <section class="px-5 mt-10" data-section="upcoming">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold font-orbitron text-white uppercase flex items-center gap-3">
+                        待上線
+                        <span class="text-slate-400 font-normal text-xs tracking-[0.2em] font-mono-code">COMING SOON</span>
+                    </h2>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- 卡片 1: 城市燃氣 -->
+                    <div class="neu-card p-4 rounded-[1.5rem] border-t-2 border-t-blue-500/40 flex flex-col active:scale-[0.98] transition-all">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-bold text-white">城市燃氣</h3>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed mb-4 line-clamp-2">包含智能安全檢測、管網優化、精準負荷預測及客服自動化調度。</p>
+                        
+                        <div class="mt-auto pt-3 border-t border-white/5">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">安全檢測</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">18個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">管網優化</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">4個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">客戶服務</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">8個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">服務調度</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">2個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2: 可再生能源 -->
+                    <div class="neu-card p-4 rounded-[1.5rem] border-t-2 border-t-emerald-500/40 flex flex-col active:scale-[0.98] transition-all">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-bold text-white">可再生能源</h3>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed mb-4 line-clamp-2">太陽能、風能發電預測，儲能系統智能化調度與優化運營系統。</p>
+                        
+                        <div class="mt-auto pt-3 border-t border-white/5">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">發電預測</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">18個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">儲能優化</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">4個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">智能調度</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">8個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">設備監控</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">2個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3: 延伸業務 -->
+                    <div class="neu-card p-4 rounded-[1.5rem] border-t-2 border-t-yellow-500/40 flex flex-col active:scale-[0.98] transition-all">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-bold text-white">延伸業務</h3>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed mb-4 line-clamp-2">氫能、生物燃料研發，生產工藝流程優化與碳捕集技術監控。</p>
+                        
+                        <div class="mt-auto pt-3 border-t border-white/5">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">氫能研發</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">8個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">工藝優化</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">5個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">碳捕集</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">3個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">工藝模擬</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">6個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 4: 水務業務 -->
+                    <div class="neu-card p-4 rounded-[1.5rem] border-t-2 border-t-cyan-500/40 flex flex-col active:scale-[0.98] transition-all">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3c-4.97 5.373-7 9.373-7 12a7 7 0 1014 0c0-2.627-2.03-6.627-7-12z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-sm font-bold text-white">水務業務</h3>
+                        </div>
+                        <p class="text-[10px] text-slate-400 leading-relaxed mb-4 line-clamp-2">水質實時監測、供水優化調度、管網漏損檢測與污水處理智能化。</p>
+                        
+                        <div class="mt-auto pt-3 border-t border-white/5">
+                            <div class="grid grid-cols-2 gap-x-2 gap-y-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">水質監測</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">10個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">漏損檢測</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">7個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">供水調度</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">3個</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[9px] text-slate-500">能效分析</span>
+                                    <span class="text-[9px] font-bold text-white font-mono-code">5個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. AI 用量統計 -->
+            <section class="px-5 mt-10" data-section="usage-stats">
+                <div class="flex flex-col gap-4 mb-6">
+                    <h2 class="text-xl font-bold uppercase tracking-tight font-orbitron">
+                        AI 用量統計中心 <span class="text-emerald-400 font-mono-code text-sm ml-2">.HUD</span>
+                    </h2>
+                    <div class="flex bg-white/5 p-1 rounded-xl border border-white/10 text-[13px] font-bold w-fit">
+                        <button class="px-4 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">當日</button>
+                        <button class="px-4 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors">本週</button>
+                        <button class="px-4 py-1.5 rounded-lg text-slate-400 hover:text-white transition-colors">本月</button>
+                    </div>
+                </div>
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-6 -mx-5 px-5">
+                    <!-- 數據匯總 -->
+                    <div class="neu-card p-5 shrink-0 w-[240px]">
+                        <h3 class="text-xs font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cyan-400 status-live"></span> 集團數據匯總
+                        </h3>
+                        <div class="space-y-2.5 font-mono-code">
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">訪問人數</span><span class="text-white font-bold">1,092 人</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">調用次數</span><span class="text-emerald-400 font-bold">2,393 次</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">消耗 Tokens</span><span class="text-cyan-400 font-bold">1,093 萬+</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">服務時長</span><span class="text-white font-bold">392 小時</span></div>
+                        </div>
+                    </div>
+
+                    <!-- 常用業務板塊 -->
+                    <div class="neu-card p-5 shrink-0 w-[240px]">
+                        <h3 class="text-xs font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> 常用業務板塊
+                        </h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1.5"><span class="text-slate-400">城市燃氣</span><span class="font-mono-code text-emerald-400">293次</span></div>
+                                <div class="progress-bar h-1"><div class="progress-fill" style="width: 30%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1.5"><span class="text-slate-400">可再生能源</span><span class="font-mono-code text-emerald-400">2,345次</span></div>
+                                <div class="progress-bar h-1"><div class="progress-fill" style="width: 95%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1.5"><span class="text-slate-400">延伸業務</span><span class="font-mono-code text-emerald-400">2,303次</span></div>
+                                <div class="progress-bar h-1"><div class="progress-fill" style="width: 90%"></div></div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-[11px] mb-1.5"><span class="text-slate-400">水務業務</span><span class="font-mono-code text-emerald-400">230次</span></div>
+                                <div class="progress-bar h-1"><div class="progress-fill" style="width: 20%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最受歡迎 Agents -->
+                    <div class="neu-card p-5 shrink-0 w-[240px]">
+                        <h3 class="text-xs font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-purple-500"></span> 最受歡迎 Agents
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[11px] cursor-pointer group">
+                                <span class="text-slate-400 group-active:text-emerald-400 transition-colors">四象雲智能助手</span>
+                                <span class="font-mono-code text-white">293次</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] cursor-pointer group">
+                                <span class="text-slate-400 group-active:text-emerald-400 transition-colors">港華雲能源調度</span>
+                                <span class="font-mono-code text-cyan-400 font-bold">2,345次</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] cursor-pointer group">
+                                <span class="text-slate-400 group-active:text-emerald-400 transition-colors">智連雲數據分析</span>
+                                <span class="font-mono-code text-white">2,303次</span>
+                            </div>
+                            <div class="flex justify-between text-[11px] cursor-pointer group">
+                                <span class="text-slate-400 group-active:text-emerald-400 transition-colors">新大洲飛文檔處理</span>
+                                <span class="font-mono-code text-white">230次</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 最受歡迎 AI 工具 -->
+                    <div class="neu-card p-5 shrink-0 w-[240px]">
+                        <h3 class="text-xs font-bold text-white mb-4 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span> 最受歡迎 AI 工具
+                        </h3>
+                        <div class="space-y-2">
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">自動表格處理</span><span class="font-mono-code text-white">293次</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">題型處理引擎</span><span class="font-mono-code text-cyan-400 font-bold">2,345次</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">報表智能整理</span><span class="font-mono-code text-white">2,363次</span></div>
+                            <div class="flex justify-between text-[11px]"><span class="text-slate-400">智能翻譯助手</span><span class="font-mono-code text-white">230次</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. AI 快訊 -->
+            <section class="px-5 mt-10 pb-20" data-section="news-feed">
+                <div class="flex flex-col gap-6 mb-8">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-xl font-bold uppercase tracking-tight font-orbitron">
+                            AI 快訊 <span class="text-slate-400 font-mono-code text-sm ml-2">.FEED</span>
+                        </h2>
+                        <a href="#" class="text-xs font-bold text-slate-400 uppercase tracking-widest">更多 →</a>
+                    </div>
+                    <div class="flex gap-6 text-[13px] font-bold uppercase tracking-widest overflow-x-auto pb-2 no-scrollbar">
+                        <button class="tab-item active whitespace-nowrap">全部</button>
+                        <button class="tab-item whitespace-nowrap">核心技術</button>
+                        <button class="tab-item whitespace-nowrap">應用領域</button>
+                        <button class="tab-item whitespace-nowrap">產業鏈</button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-6">
+                    <!-- 特色新聞 -->
+                    <div class="neu-card overflow-hidden group active:scale-[0.98] transition-all">
+                        <div class="relative h-48 overflow-hidden">
+                            <img src="../dist/assets/images/googlear.png" alt="AI眼鏡" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4">
+                                <span class="text-[10px] font-bold px-2 py-1 bg-cyan-500/20 text-cyan-400 rounded-full border border-cyan-500/30 backdrop-blur-md uppercase">核心技術</span>
+                            </div>
+                        </div>
+                        <div class="p-5">
+                            <div class="text-[11px] font-mono-code text-slate-500 mb-2">新浪財經 · 2025/12/11 18:20</div>
+                            <h4 class="text-base font-bold text-white mb-3 leading-snug group-hover:text-emerald-400 transition-colors">AI眼鏡賽道再迎巨頭入場 - 谷歌發佈全新 AR 產品線</h4>
+                            <p class="text-xs text-slate-400 leading-relaxed line-clamp-2">展示 AI 眼鏡生態最新進展，宣佈首款深度集成大語言模型的 AR 產品將於 2026 年正式投入商用。</p>
+                        </div>
+                    </div>
+
+                    <!-- 港華智慧能源新聞 -->
+                    <div class="neu-card p-4 flex gap-4 active:scale-[0.98] transition-all">
+                        <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+                            <img src="https://images.unsplash.com/photo-1497436072909-60f360e1d4b1?w=400&h=200&fit=crop" alt="企業動態" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[9px] font-bold px-2 py-0.5 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20 uppercase">企業動態</span>
+                                <span class="text-[9px] font-mono-code text-slate-500">2025/12/11</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white mb-1 line-clamp-2 group-hover:text-emerald-400 transition-colors">港華智慧能源獲評年度最佳創新企業</h4>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">憑藉在 AI 驅動能源管理領域的創新突破獲此殊榮。</p>
+                        </div>
+                    </div>
+
+                    <!-- 普通新聞卡片 1 -->
+                    <div class="neu-card p-4 flex gap-4 active:scale-[0.98] transition-all">
+                        <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+                            <img src="../dist/assets/images/aiagent.png" alt="行業報告" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[9px] font-bold px-2 py-0.5 bg-purple-500/10 text-purple-400 rounded-full border border-purple-500/20 uppercase">行業報告</span>
+                                <span class="text-[9px] font-mono-code text-slate-500">2025/12/11</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white mb-1 line-clamp-2 group-hover:text-emerald-400 transition-colors">智能體技術發展白皮書正式發布</h4>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">定義企業 AI 新標準，推動產業智能化轉型。</p>
+                        </div>
+                    </div>
+
+                    <!-- 普通新聞卡片 2 -->
+                    <div class="neu-card p-4 flex gap-4 active:scale-[0.98] transition-all">
+                        <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+                            <img src="../dist/assets/images/gasdetect.png" alt="技術突破" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[9px] font-bold px-2 py-0.5 bg-orange-500/10 text-orange-400 rounded-full border border-orange-500/20 uppercase">技術突破</span>
+                                <span class="text-[9px] font-mono-code text-slate-500">2025/12/10</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white mb-1 line-clamp-2 group-hover:text-emerald-400 transition-colors">AI 大模型在燃氣檢測領域取得突破</h4>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">準確率提升 35%，檢測效率翻倍。</p>
+                        </div>
+                    </div>
+
+                    <!-- 趨勢洞察新聞 -->
+                    <div class="neu-card p-4 flex gap-4 active:scale-[0.98] transition-all">
+                        <div class="w-24 h-24 rounded-xl overflow-hidden shrink-0">
+                            <img src="../dist/assets/images/reporting.png" alt="趨勢洞察" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 flex flex-col justify-center">
+                            <div class="flex items-center gap-2 mb-2">
+                                <span class="text-[9px] font-bold px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full border border-blue-500/20 uppercase">趨勢洞察</span>
+                                <span class="text-[9px] font-mono-code text-slate-500">2025/12/08</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-white mb-1 line-clamp-2 group-hover:text-emerald-400 transition-colors">2026 年 AI 技術發展趨勢預測報告</h4>
+                            <p class="text-[11px] text-slate-400 line-clamp-1">深度解析未來一年 AI 發展方向與機遇。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 底部導航欄強化 -->
+        <nav class="nav-wrapper safe-area-bottom">
+            <!-- 更多菜單彈窗 -->
+            <div id="more-menu" class="menu-popover active">
+                <a href="#" class="menu-item">
+                    <div class="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-medium">知識庫</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="w-10 h-10 rounded-xl bg-[#00F5A0]/10 flex items-center justify-center text-[#00F5A0]">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-medium">AI 報告</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="w-10 h-10 rounded-xl bg-orange-400/10 flex items-center justify-center text-orange-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-medium">AI 快訊</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <div class="w-10 h-10 rounded-xl bg-purple-400/10 flex items-center justify-center text-purple-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <span class="text-xs font-medium">AI 文化</span>
+                </a>
+            </div>
+
+            <!-- 主導航欄 -->
+            <div class="main-nav">
+                <a href="index.html" class="nav-item active">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="nav-label">首頁</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    <span class="nav-label">AGENT</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 00-1 1v1a2 2 0 11-4 0v-1a1 1 0 00-1-1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
+                    </svg>
+                    <span class="nav-label">插件</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span class="nav-label">模型</span>
+                </a>
+                <button id="more-btn" class="nav-item active">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                    <span class="nav-label">更多</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- 機器人懸浮按鈕 -->
+        <div id="robot-trigger" class="robot-trigger">
+            <div class="robot-head">
+                <div class="robot-eye-container">
+                    <div class="robot-eye"></div>
+                    <div class="robot-eye"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chatbot Lightbox -->
+        <div id="chatbot-lightbox" class="chatbot-lightbox">
+            <div class="chatbot-content">
+                <div class="chatbot-header">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
+                            <div class="robot-eye-container scale-50">
+                                <div class="robot-eye"></div>
+                                <div class="robot-eye"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-white font-bold text-sm">TGAI 智能助手</h3>
+                            <p class="text-[10px] text-emerald-400">● 在線</p>
+                        </div>
+                    </div>
+                    <button id="close-chatbot" class="p-2 text-slate-400 active:scale-90 transition-transform">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="chatbot-messages flex flex-col no-scrollbar">
+                    <div class="message-bubble message-bot">
+                        你好！我是 TGAI 智能助手。有什麼我可以幫你的嗎？
+                    </div>
+                    <div class="message-bubble message-user">
+                        我想了解一下集團目前的 AI 模型接入情況。
+                    </div>
+                    <div class="message-bubble message-bot">
+                        目前集團已接入 12 個大模型，包括 DeepSeek、通義千問等。你可以前往「模型管理」查看詳細列表。
+                    </div>
+                </div>
+
+                <div class="chatbot-input-area">
+                    <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-3">
+                        <input type="text" placeholder="輸入訊息..." class="bg-transparent border-none text-sm text-white focus:outline-none flex-1 placeholder:text-slate-500">
+                        <button class="text-cyan-400 p-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 更多菜單交互 - 已改為固定顯示
+            const moreBtn = document.getElementById('more-btn');
+            const moreMenu = document.getElementById('more-menu');
+            
+            // Chatbot 交互邏輯
+            const robotTrigger = document.getElementById('robot-trigger');
+            const chatbotLightbox = document.getElementById('chatbot-lightbox');
+            const closeChatbot = document.getElementById('close-chatbot');
+
+            robotTrigger.addEventListener('click', () => {
+                chatbotLightbox.classList.add('active');
+            });
+
+            closeChatbot.addEventListener('click', () => {
+                chatbotLightbox.classList.remove('active');
+            });
+
+            // 點擊背景關閉 (可選)
+            chatbotLightbox.addEventListener('click', (e) => {
+                if (e.target === chatbotLightbox) {
+                    chatbotLightbox.classList.remove('active');
+                }
+            });
+
+            // 保持固定顯示狀態
+            moreMenu.classList.add('active');
+            moreBtn.classList.add('active');
+
+            moreBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // 允許切換，但預設為打開
+                moreMenu.classList.toggle('active');
+                moreBtn.classList.toggle('active');
+            });
+
+            // 註釋掉點擊外部關閉，方便 Figma 導入
+            /*
+            document.addEventListener('click', (e) => {
+                if (!moreMenu.contains(e.target) && e.target !== moreBtn) {
+                    moreMenu.classList.remove('active');
+                }
+            });
+            */
+
+            // 待上線卡片橫向滾動邏輯
+            const scrollContainer = document.getElementById('upcoming-scroll-container');
+            const leftBtn = document.getElementById('upcoming-scroll-left');
+            const rightBtn = document.getElementById('upcoming-scroll-right');
+
+            if (scrollContainer && leftBtn && rightBtn) {
+            leftBtn.addEventListener('click', () => {
+                scrollContainer.scrollBy({ left: -280, behavior: 'smooth' });
+            });
+
+            rightBtn.addEventListener('click', () => {
+                scrollContainer.scrollBy({ left: 280, behavior: 'smooth' });
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    
+    <title>用戶頭像彈窗預覽 | TGAI</title>
+    <style>
+        :root {
+            --font-main: 'Noto Sans TC', 'Inter', sans-serif;
+        }
+        body {
+            font-family: var(--font-main);
+            background: #020617; /* 深色背景以便觀察彈窗效果 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-h-screen: 100vh;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .user-dropdown {
+            width: 360px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6);
+            overflow: hidden;
+            animation: fadeInScale 0.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.95) translateY(-10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .dropdown-section {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .dropdown-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #38BDF8;
+            margin-bottom: 16px;
+            letter-spacing: 0.05em;
+        }
+
+        .account-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 10px 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s;
+        }
+
+        .stat-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 242, 255, 0.3);
+        }
+
+        .stat-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            margin-bottom: 0px;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #94A3B8;
+            margin-top: 4px;
+        }
+
+        .message-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 13px;
+            color: #CBD5E1;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .message-item:hover {
+            color: #00F2FF;
+        }
+
+        .message-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: #10B981;
+            margin-top: 7px;
+            flex-shrink: 0;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        .divider-v {
+            width: 1px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-logout {
+            padding: 4px 12px;
+            border-radius: 6px;
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: #F87171;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(244, 63, 94, 0.1);
+            color: #EF4444;
+            border-color: #EF4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="ambient-glow"></div>
+
+    <!-- 用戶頭像彈窗 -->
+    <div class="user-dropdown" data-page="user-dropdown-preview" data-section="dropdown-main">
+        
+        <!-- 賬戶部分 -->
+        <div class="dropdown-section" data-section="account-section">
+            <div class="section-header">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span>賬戶 ></span>
+            </div>
+            <div class="account-info">
+                <div class="space-y-1">
+                    <div class="text-sm font-bold text-slate-100">138*******23</div>
+                    <div class="text-xs text-slate-500">XXXXX有限公司</div>
+                    <a href="#" class="inline-block text-xs text-cyan-400 hover:underline pt-1">修改密碼</a>
+                </div>
+                <button class="btn-logout">
+                    退出登錄
+                </button>
+            </div>
+        </div>
+
+        <!-- 消息中心 -->
+        <div class="dropdown-section" data-section="message-section">
+            <div class="section-header">
+                <span>消息中心</span>
+                <span class="text-[11px] px-2 py-0.5 rounded-full bg-red-500/10 text-red-500 font-bold">2條新消息</span>
+            </div>
+            <div class="space-y-3">
+                <div class="message-item">
+                    <span class="message-dot"></span>
+                    <span class="truncate">【系統通知】這是一條系統通知信息......</span>
+                </div>
+                <div class="message-item">
+                    <span class="message-dot"></span>
+                    <span class="truncate">【反饋信息】這是一條反饋信息......</span>
+                </div>
+                <a href="#" class="inline-block text-xs text-cyan-400 hover:underline">更多 ></a>
+            </div>
+        </div>
+
+        <!-- 工作台 -->
+        <div class="dropdown-section" data-section="workbench-section">
+            <div class="section-header">
+                <span>工作台</span>
+            </div>
+            
+            <div class="mb-4">
+                <div class="text-xs font-bold text-slate-400 mb-3">Agent超市</div>
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="stat-num text-[#00F2FF]">15<span class="text-xs ml-0.5">個</span></div>
+                        <div class="stat-label">已申請</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num text-[#00F2FF]">5<span class="text-xs ml-0.5">個</span></div>
+                        <div class="stat-label">已收藏</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-num text-[#00F2FF]">3<span class="text-xs ml-0.5">個</span></div>
+                        <div class="stat-label">推薦使用</div>
+                    </div>
+                </div>
+                <div class="mt-3 text-[11px] text-slate-500">
+                    您有 <span class="text-[#00F2FF] font-bold">3</span> 條申請審核中，請耐心等候！
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6 pt-4 border-t border-white/5">
+                <div class="flex-1 text-center">
+                    <div class="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-tighter">插件倉庫</div>
+                    <div class="flex items-baseline justify-center gap-1">
+                        <span class="text-2xl font-bold font-inter text-[#00F2FF]">5</span>
+                        <span class="text-[10px] text-slate-600 font-bold">個已收藏</span>
+                    </div>
+                </div>
+                <div class="divider-v"></div>
+                <div class="flex-1 text-center">
+                    <div class="text-[10px] font-bold text-slate-500 mb-2 uppercase tracking-tighter">大模型</div>
+                    <div class="flex items-baseline justify-center gap-1">
+                        <span class="text-2xl font-bold font-inter text-[#00F2FF]">5</span>
+                        <span class="text-[10px] text-slate-600 font-bold">個已收藏</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

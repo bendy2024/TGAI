@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <include src="components/head-common.html"></include>
+    <title>Agent 詳情 | TGAI</title>
+    <style>
+        .agent-thumbnail {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.1), rgba(0, 245, 160, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .status-pill-local {
+            background: rgba(34, 197, 94, 0.2);
+            color: #4ADE80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        .meta-label {
+            color: #94A3B8;
+            width: 80px;
+            display: inline-block;
+        }
+        .tag-pill {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #CBD5E1;
+            padding: 4px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .description-p {
+            color: #E2E8F0;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+        .sidebar-action-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white relative">
+    <div class="ambient-glow"></div>
+    <div class="grid-matrix"></div>
+
+    <include src="components/hud.html"></include>
+    <include src="components/header.html"></include>
+
+    <main data-page="agent-detail" class="max-w-[1200px] mx-auto px-8 pt-12 pb-32">
+        
+        <!-- Hero Section -->
+        <section data-section="agent-hero" class="flex flex-col md:flex-row items-start gap-8 mb-12">
+            <div class="w-32 h-32 rounded-2xl agent-thumbnail overflow-hidden shrink-0 border border-white/10">
+                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=800&auto=format&fit=crop" alt="通義千問" class="w-full h-full object-cover">
+            </div>
+            
+            <div class="flex-1">
+                <div class="flex flex-wrap items-center gap-4 mb-6">
+                    <h1 class="text-3xl font-bold tracking-tight">通義千問3-文本生成大模型</h1>
+                    <span class="status-pill-local px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">本地</span>
+                    
+                    <div class="ml-auto flex items-center gap-4">
+                        <button class="bg-orange-500 hover:bg-orange-400 text-white px-8 py-2.5 rounded-xl font-bold transition-all shadow-lg shadow-orange-500/20">
+                            申請使用
+                        </button>
+                        <button class="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/50 transition-all text-cyan-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                            </svg>
+                        </button>
+                        <button class="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-400/50 transition-all text-emerald-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Meta Info -->
+                <div data-section="agent-meta" class="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-3 text-sm border-t border-white/5 pt-6">
+                    <div><span class="meta-label">創建者：</span>張*三  13800*******</div>
+                    <div><span class="meta-label">所屬企業：</span>中山市XXXX有限公司</div>
+                    <div><span class="meta-label">創建時間：</span>2025/01/12 16:22:22</div>
+                    <div><span class="meta-label">更新時間：</span>2025/01/12 16:22:22</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex flex-col lg:flex-row gap-12">
+            <!-- Left Column: Tags & Description -->
+            <div class="flex-1">
+                <!-- Tags -->
+                <div data-section="agent-tags" class="flex flex-wrap gap-3 mb-10">
+                    <span class="tag-pill">城市燃氣</span>
+                    <span class="tag-pill">視頻工具</span>
+                    <span class="tag-pill">對話式交互</span>
+                </div>
+
+                <!-- Description -->
+                <article data-section="agent-description" class="prose prose-invert max-w-none">
+                    <p class="description-p">
+                        大模型，常稱為大型語言模型（Large Language Model，LLM），其概念現已拓展至多模態領域，是人工智慧領域的核心技術成果。指通過大規模參數與海量數據訓練構建而成的深度學習模型。憑藉強大的信息處理與智能生成能力，正深刻重構各行業的運行模式。這類模型通常具備數億至數千億級別的參數規模，訓練數據量可達TB級，涵蓋文本、圖像、音頻等多種數據類型，突破了傳統模型的能力邊界。
+                    </p>
+                    <p class="description-p">
+                        大模型的核心優勢源於其獨特的技術架構與訓練體系。架構層面，Transformer架構及注意力機制是其技術基石，能讓模型動態聚焦關鍵信息，精準捕捉數據中的長距離邏輯關聯。如同人類理解內容時的重點關注與上下文串聯能力。訓練過程分為預訓練、微調與對齊優化三步：預訓練階段通過無監督學習吸收海量通用數據，構建基礎知識體系；微調階段針對特定領域用少量標注數據優化，適配專業場景需求；對齊優化則藉助人類反饋強化學習（RLHF）等技術，讓輸出更符合人類價值觀與使用需求，減少有害信息生成。
+                    </p>
+                    <p class="description-p">
+                        相較於傳統小模型，大模型的核心特徵是「湧現能力」——當參數與數據規模突破臨界值後，模型會自主習得高階特徵與複雜模式，展現出泛化能力強、知識儲備豐富、交互智能度高的優勢。它無需針對單一任務重新訓練，可靈活切換文本翻譯、內容創作、問答對話等多種任務，同時能理解複雜語義，生成連貫且邏輯嚴謹的回复，模擬人類的語言與思維模式。如今，大模型已滲透到金融、醫療、教育、製造等多個核心行業，實現價值落地。金融領域，它助力智能風控與合同解析，大幅提升風險識別準確率與業務處理效率；醫療場景中，輔助臨床診斷、加速藥物研發，縮短診療與研發週期；製造業裡，優化產品設計與設備運維，推動柔性化生產轉型；教育、法律、物流等領域也藉助大模型實現個性化服務、高效文書處理與路徑優化等創新應用。
+                    </p>
+                    <p class="description-p">
+                        當前，大模型行業正從「參數競賽」邁入技術深化與商業落地的關鍵階段。技術上，多模態動態交互、AI Agent自主任務處理、輕量化部署等方向持續突破，破解算力能耗困局的同時，讓模型從「數字工具」向「物理參與者」演進。生態格局上，中美形成開源與閉源共生的差異化路線，國產模型在技術自主與場景適配中快速崛起。
+                    </p>
+                    <p class="description-p">
+                        未來，隨著合規體系完善與算力底座升級，大模型將進一步嵌入社會運行與產業升級的毛細血管，成為像電力、互聯網一樣的普惠基礎設施。它將從單向的工具屬性轉化為具備多步規劃能力的智能代理，產生持續且深遠的影響。
+                    </p>
+                </article>
+
+                <!-- Footer feedback -->
+                <div data-section="footer-links" class="mt-12 pt-8 border-t border-white/5 flex justify-end">
+                    <a href="#" class="text-sm text-cyan-400 hover:text-cyan-300 transition-colors">有問題？點我反饋</a>
+                </div>
+            </div>
+
+            <!-- Right Sidebar Column -->
+            <aside class="w-full lg:w-80 shrink-0">
+                <div data-section="floating-sidebar" class="sticky top-32 space-y-6">
+                    <!-- State 1: Not Applied -->
+                    <div class="sidebar-action-card p-6 flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-slate-400">當前狀態</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">未申請使用</span>
+                        </div>
+                        <button class="w-full bg-orange-500 hover:bg-orange-400 text-white py-3 rounded-xl font-bold transition-all">
+                            申請使用
+                        </button>
+                    </div>
+
+                    <!-- State 2: Applied -->
+                    <div class="sidebar-action-card p-6 flex flex-col gap-4 opacity-50 border-dashed border-white/10">
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm font-medium text-slate-400">另一狀態示範</span>
+                            <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">已申請使用</span>
+                        </div>
+                        <button class="w-full bg-emerald-500 hover:bg-emerald-400 text-black py-3 rounded-xl font-bold transition-all">
+                            馬上使用
+                        </button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- 申請使用對話框 -->
+    <div id="applyModal" class="fixed inset-0 z-[200] hidden flex items-center justify-center px-4">
+        <!-- 背景遮罩 -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeApplyModal()"></div>
+        
+        <!-- 彈窗主體 -->
+        <div class="relative bg-[#0f172a]/90 backdrop-blur-2xl w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden transform transition-all border border-white/10">
+            <!-- 標題欄 -->
+            <div class="px-10 py-8 border-b border-white/10 flex items-center justify-between">
+                <h3 class="text-2xl font-bold text-white tracking-tight">申請使用</h3>
+                <button onclick="closeApplyModal()" class="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-all">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- 表單內容 -->
+            <div class="px-10 py-10">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 text-sm">
+                    <div class="space-y-2">
+                        <p class="text-slate-500 font-medium uppercase tracking-wider text-[11px]">申請人</p>
+                        <p class="font-bold text-slate-100 text-base">張三</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-slate-500 font-medium uppercase tracking-wider text-[11px]">聯繫電話</p>
+                        <p class="font-bold text-slate-100 text-base">138XXXXXX</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-slate-500 font-medium uppercase tracking-wider text-[11px]">所屬企業</p>
+                        <p class="font-bold text-slate-100 text-base">XXXXXXX公司</p>
+                    </div>
+                </div>
+                
+                <div class="space-y-4">
+                    <label class="block text-sm font-bold text-slate-200 tracking-wide">
+                        <span class="text-orange-500 mr-1">*</span>申請理由
+                    </label>
+                    <textarea 
+                        rows="6" 
+                        class="w-full px-6 py-4 rounded-2xl bg-white/5 border border-white/10 focus:border-orange-500/50 focus:ring-4 focus:ring-orange-500/10 outline-none transition-all text-slate-100 placeholder:text-slate-500 text-base"
+                        placeholder="請輸入您申請使用該模型的具體原因及應用場景..."
+                    ></textarea>
+                </div>
+            </div>
+            
+            <!-- 按鈕區 -->
+            <div class="px-10 py-8 border-t border-white/5 flex justify-end gap-4">
+                <button onclick="closeApplyModal()" class="px-8 py-3 rounded-xl font-bold text-slate-300 hover:text-white hover:bg-white/10 transition-all bg-white/5 border border-white/10">
+                    取消
+                </button>
+                <button onclick="closeApplyModal()" class="px-10 py-3 rounded-xl font-bold text-white bg-orange-500 hover:bg-orange-400 transition-all shadow-lg shadow-orange-500/30">
+                    提交申請
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openApplyModal() {
+            const modal = document.getElementById('applyModal');
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeApplyModal() {
+            const modal = document.getElementById('applyModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+
+        // 為所有「申請使用」按鈕添加點擊事件
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('button').forEach(button => {
+                if (button.textContent.trim() === '申請使用') {
+                    button.addEventListener('click', openApplyModal);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

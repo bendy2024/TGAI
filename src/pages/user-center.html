@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <include src="components/head-common.html"></include>
+    <title>用戶中心 | TGAI</title>
+    <style>
+        .user-sidebar {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: #94A3B8;
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            color: #00F2FF;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #38BDF8;
+            margin-bottom: 16px;
+            margin-top: 32px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .agent-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .agent-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(0, 242, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        .agent-card.active {
+            background: rgba(16, 185, 129, 0.05);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+        .card-actions {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .agent-card:hover .card-actions {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .status-tag {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            transition: opacity 0.3s;
+        }
+        .agent-card:hover .status-tag {
+            opacity: 0;
+        }
+        .message-table th {
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #64748B;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .message-table td {
+            padding: 16px;
+            font-size: 13px;
+            color: #CBD5E1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+        .nav-tab {
+            position: relative;
+            padding-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .nav-tab.active {
+            color: #00F2FF;
+        }
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: #00F2FF;
+            box-shadow: 0 0 10px #00F2FF;
+        }
+        .view-more-link {
+            font-size: 15px;
+            font-weight: 700;
+            color: #CBD5E1;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s;
+            display: inline-flex;
+            items-center: center;
+            gap: 8px;
+        }
+        .view-more-link:hover {
+            color: #10B981;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white relative flex flex-col">
+    <div class="ambient-glow"></div>
+    <div class="grid-matrix"></div>
+
+    <include src="components/hud.html"></include>
+    <include src="components/header.html"></include>
+
+    <div class="flex-1 relative z-10 w-full max-w-[1600px] mx-auto px-12">
+        <div class="flex h-full border-x border-white/5">
+            <!-- Sidebar -->
+            <aside data-section="user-sidebar" class="w-72 shrink-0 user-sidebar p-8 overflow-y-auto">
+            <div class="mb-8">
+                <h2 class="text-lg font-bold mb-4">賬戶中心</h2>
+                <div class="text-sm text-cyan-400 font-bold bg-cyan-400/10 px-4 py-2 rounded-lg border border-cyan-400/20">工作台</div>
+            </div>
+
+            <section class="mb-10">
+                <h3 class="section-title">Agents</h3>
+                <div class="stat-item"><span>已申請</span> <span class="stat-value">102個</span></div>
+                <div class="stat-item"><span>申請記錄</span> <span class="stat-value">3條記錄待審核</span></div>
+                <div class="stat-item"><span>我創建的</span> <span class="stat-value">3個</span></div>
+                <div class="stat-item"><span>我分享的</span> <span class="stat-value">12</span></div>
+                <div class="stat-item"><span>已收藏</span> <span class="stat-value">3個</span></div>
+                <div class="stat-item"><span>推薦使用</span> <span class="text-slate-400">12</span></div>
+                <div class="stat-item"><span>推薦使用</span> <span class="text-slate-400">12</span></div>
+                <div class="flex gap-2 mt-4">
+                    <button class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold py-2 rounded">去創建</button>
+                    <button class="flex-1 bg-orange-500 hover:bg-orange-400 text-white text-xs font-bold py-2 rounded">去分享</button>
+                </div>
+            </section>
+
+            <section class="mb-10">
+                <h3 class="section-title text-emerald-400">插件</h3>
+                <div class="stat-item"><span>已收藏</span> <span class="stat-value">3個</span></div>
+            </section>
+
+            <section class="mb-10">
+                <h3 class="section-title text-blue-400">大模型</h3>
+                <div class="stat-item"><span>已申請</span> <span class="stat-value">2個</span></div>
+                <div class="stat-item"><span>申請記錄</span> <span class="stat-value">3條記錄待審核</span></div>
+                <div class="stat-item"><span>已收藏</span> <span class="stat-value">3個</span></div>
+            </section>
+
+            <section class="border-t border-white/5 pt-8">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">賬戶安全</h3>
+                <div class="space-y-3 text-xs text-slate-400">
+                    <div class="flex justify-between"><span>我的賬戶</span> <span class="text-slate-200">138*******23</span></div>
+                    <div class="flex justify-between"><span>所屬公司</span> <span class="text-slate-200">XXXXX有限公司</span></div>
+                    <div class="flex justify-between"><span>部門</span> <span class="text-slate-200">財務部</span></div>
+                    <div class="flex justify-between"><span>註冊時間</span> <span class="text-slate-200">2025/11/08 13:23</span></div>
+                    <div class="flex justify-between"><span>上次登錄時間</span> <span class="text-slate-200">2025/11/08 13:23</span></div>
+                </div>
+                <div class="mt-6 flex flex-col gap-2">
+                    <a href="#" class="text-cyan-400 text-xs hover:underline">修改密碼</a>
+                    <a href="#" class="text-red-400 text-xs hover:underline mt-2">退出登錄</a>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Main Content -->
+        <main data-page="user-center" class="flex-1 p-10 overflow-y-auto">
+            <!-- Message Center -->
+            <section data-section="message-center" class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center gap-8 text-sm font-bold text-slate-400">
+                        <span class="text-white text-lg">消息中心 (2條新消息)</span>
+                        <div class="flex gap-6 border-b border-white/5">
+                            <span class="nav-tab active">系統消息</span>
+                            <span class="nav-tab">反饋消息</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-slate-400">
+                        <input type="checkbox" class="rounded border-white/10 bg-white/5"> 僅查看未讀
+                    </div>
+                </div>
+                <div class="bg-white/5 rounded-2xl border border-white/10 overflow-hidden">
+                    <table class="w-full message-table">
+                        <thead>
+                            <tr>
+                                <th class="w-16">序號</th>
+                                <th>標題</th>
+                                <th>內容</th>
+                                <th class="w-40">發送時間</th>
+                                <th class="w-24">是否已讀</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>5</td><td>系統升級通知</td><td>全平台將於本週六凌晨進行維護...</td><td>2026/01/24 10:00</td><td class="text-slate-500">已讀</td></tr>
+                            <tr><td>4</td><td>申請審核通過</td><td>您的「法律諮詢 Agent」申請已通過審核...</td><td>2026/01/23 15:30</td><td class="text-emerald-400 font-bold">未讀</td></tr>
+                            <tr><td>3</td><td>安全登錄提醒</td><td>檢測到您的賬戶在新的設備上登錄...</td><td>2026/01/22 09:12</td><td class="text-slate-500">已讀</td></tr>
+                            <tr><td>2</td><td>平台更新日誌</td><td>V2.1 版本正式上線，新增 MCP 協議支持...</td><td>2026/01/20 18:45</td><td class="text-slate-500">已讀</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="p-4 text-center">
+                        <a href="#" class="text-cyan-400 text-xs hover:underline">查看更多 ></a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Workbench -->
+            <section data-section="workbench-agents">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-xl font-bold">工作台</h2>
+                </div>
+
+                <div class="mb-10">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-cyan-400 font-bold flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            Agents
+                        </h3>
+                        <div class="flex gap-6 text-sm text-slate-400">
+                            <span class="nav-tab active">已申請 (8個, 可立即使用)</span>
+                            <span class="nav-tab">我創建的 (3)</span>
+                            <span class="nav-tab">我分享的 (0)</span>
+                            <span class="nav-tab">已收藏 (5)</span>
+                            <span class="nav-tab">推薦使用 (3)</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 gap-6">
+                        <!-- Card 1 -->
+                        <div class="agent-card">
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Agent">
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-100">通義千問3-文本生成大模型</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言...</p>
+                                </div>
+                            </div>
+                            <div class="card-actions flex gap-2">
+                                <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                            </div>
+                            <span class="text-[10px] text-orange-400 font-bold status-tag">最近常用</span>
+                        </div>
+
+                        <!-- Card 2: Active -->
+                        <div class="agent-card active">
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden border border-emerald-500/20 flex items-center justify-center shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Active Agent">
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-100">通義千問3-文本生成大模型</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言...</p>
+                                </div>
+                            </div>
+                            <div class="card-actions flex gap-2">
+                                <button class="flex-1 bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 rounded-lg transition-all shadow-lg shadow-blue-500/20">查看詳情</button>
+                                <button class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold py-2 rounded-lg transition-all shadow-lg shadow-emerald-500/20">立即使用</button>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="agent-card">
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Agent">
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-100">通義千問3-文本生成大模型</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言...</p>
+                                </div>
+                            </div>
+                            <div class="card-actions flex gap-2">
+                                <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                            </div>
+                            <div class="text-[10px] text-slate-400 font-mono-code status-tag">上次使用時間：2026/1/3 19:00</div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="agent-card">
+                            <div class="flex gap-4 mb-4">
+                                <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                    <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc51?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Agent">
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-slate-100">通義千問3-文本生成大模型</h4>
+                                    <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言...</p>
+                                </div>
+                            </div>
+                            <div class="card-actions flex gap-2">
+                                <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                            </div>
+                            <div class="text-[10px] text-slate-200 font-mono-code status-tag">上次使用時間：2026/1/3 19:00</div>
+                        </div>
+                    </div>
+                    <div class="text-right mt-6">
+                        <a href="#" class="view-more-link">查看更多工具 →</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Plugins Section -->
+            <section data-section="workbench-plugins" class="mb-12">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-emerald-400 font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+                        插件 | 已收藏 (3)
+                    </h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <!-- Plugin Card 1 -->
+                    <div class="agent-card">
+                        <div class="flex gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-blue-500/20 flex items-center justify-center shrink-0">
+                                <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Plugin">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100">通文字FR3-文本生成大模型</h4>
+                                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持多種模型架構和資源模塊集成...</p>
+                            </div>
+                        </div>
+                        <div class="card-actions flex gap-2">
+                            <button class="flex-1 bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 rounded-lg transition-all">查看詳情</button>
+                        </div>
+                        <div class="text-[10px] text-slate-200 font-mono-code status-tag">上架時間：2026/1/3 19:00</div>
+                    </div>
+                    <!-- Plugin Card 2 -->
+                    <div class="agent-card">
+                        <div class="flex gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Plugin">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100">數據清洗插件 Pro</h4>
+                                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">自動化處理非結構化數據，支持多維度清洗...</p>
+                            </div>
+                        </div>
+                        <div class="card-actions flex gap-2">
+                            <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono-code status-tag">上架時間：2026/1/2 10:00</div>
+                    </div>
+                    <!-- Plugin Card 3 -->
+                    <div class="agent-card">
+                        <div class="flex gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Plugin">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100">能源報告生成器</h4>
+                                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">一鍵生成集團標準化能源分析週報...</p>
+                            </div>
+                        </div>
+                        <div class="card-actions flex gap-2">
+                            <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono-code status-tag">上架時間：2026/1/1 15:30</div>
+                    </div>
+                </div>
+                <div class="text-right mt-6">
+                    <a href="#" class="view-more-link">查看更多插件 →</a>
+                </div>
+            </section>
+
+            <!-- Models Section -->
+            <section data-section="workbench-models">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-blue-400 font-bold flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"></path></svg>
+                        模型 (已收藏 4)
+                    </h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                    <!-- Model Card 1 -->
+                    <div class="agent-card active">
+                        <div class="flex gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-emerald-500/20 flex items-center justify-center shrink-0">
+                                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="Qwen3">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100">通義千問3-文本生成大模型</h4>
+                                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">Qwen3 支持思考/非思考雙模式應對不同需求...</p>
+                            </div>
+                        </div>
+                        <div class="card-actions flex gap-2">
+                            <button class="flex-1 bg-blue-500 hover:bg-blue-400 text-white text-xs font-bold py-2 rounded-lg transition-all">查看詳情</button>
+                            <button class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold py-2 rounded-lg transition-all">立即使用</button>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono-code status-tag">上次使用時間：2026/1/3 19:00</div>
+                    </div>
+                    <!-- Model Card 2 -->
+                    <div class="agent-card">
+                        <div class="flex gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-xl overflow-hidden border border-white/10 flex items-center justify-center shrink-0">
+                                <img src="https://images.unsplash.com/photo-1620712943543-bcc4628c71d5?q=80&w=200&auto=format&fit=crop" class="w-full h-full object-cover" alt="DeepSeek">
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-slate-100">DeepSeek-V3 推理引擎</h4>
+                                <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">專為能源供應鏈優化，支持多維度決策分析...</p>
+                            </div>
+                        </div>
+                        <div class="card-actions flex gap-2">
+                            <button class="flex-1 bg-white/5 hover:bg-white/10 text-xs font-bold py-2 rounded-lg transition-all border border-white/10 text-slate-200">查看詳情</button>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono-code status-tag">上次使用時間：2026/1/2 14:00</div>
+                    </div>
+                </div>
+                <div class="text-right mt-6">
+                    <a href="#" class="view-more-link">查看更多模型 →</a>
+                </div>
+            </section>
+        </main>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!-- ═══════════════════════════════════════════════════════════════
+     HUD 狀態欄 (隨頁面滾動)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="w-full h-10 border-b border-white/5 flex items-center justify-between px-12 text-[14px] tracking-widest font-mono-code bg-[#020406]">
+    <div class="flex items-center gap-10">
+        <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 status-live"></span>
+            <span class="text-slate-200 uppercase">系統狀態: 在線 / 2026.01.24</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2.5">
+            <span class="text-slate-200">運算集群負載:</span>
+            <span class="text-cyan-400">72%</span>
+        </div>
+        <div class="hidden lg:flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span class="text-slate-200 uppercase">Data Sync: 2m Ago</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-8">
+        <span class="text-slate-200 uppercase hidden sm:inline">Region: HK / Shenzhen</span>
+        <span class="text-cyan-400 uppercase">API 延遲: 42ms</span>
+    </div>
+</div>

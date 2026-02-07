@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/main.css">
+<script src="js/main.js" defer=""></script>
+
+    <title>TGAI 設計系統指引 (Design System Guide)</title>
+    <style>
+        :root {
+            /* 背景色 */
+            --bg-deep: #020406;
+            --bg-surface: #080C12;
+
+            /* 品牌色 */
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-blue: #005DAA;
+
+            /* 文字色 */
+            --text-main: #F8FAFC;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+
+            /* 邊框 */
+            --border-white: rgba(255, 255, 255, 0.12);
+            --border-glow: rgba(0, 242, 255, 0.5);
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: 'Noto Sans TC', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .ambient-glow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% -20%, rgba(0, 242, 255, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .grid-matrix {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .glass-panel {
+            background: rgba(8, 12, 18, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border-white);
+            border-radius: 24px;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: linear-gradient(to right, var(--tg-cyan), var(--tg-emerald));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .color-card {
+            transition: transform 0.3s ease;
+        }
+        .color-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .neu-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-white);
+            border-radius: 24px;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        .neu-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--border-glow);
+            box-shadow: 0 10px 30px -10px rgba(0, 242, 255, 0.2);
+        }
+
+        .btn-action {
+            background: linear-gradient(90deg, var(--tg-cyan), var(--tg-emerald));
+            color: #020406;
+            font-weight: 700;
+            padding: 10px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .btn-action:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transform: scale(1.02);
+        }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .btn-glass:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--tg-cyan);
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        nav a {
+            transition: all 0.3s ease;
+        }
+        nav a:hover {
+            color: var(--tg-cyan);
+        }
+
+        .sidebar-link.active {
+            color: var(--tg-cyan);
+            border-right: 2px solid var(--tg-cyan);
+        }
+    </style>
+</head>
+<body class="flex min-h-screen">
+    <div class="ambient-glow"></div>
+    <div class="grid-matrix"></div>
+    <!-- ═══════════════════════════════════════════════════════════════
+     HUD 狀態欄 (隨頁面滾動)
+     ═══════════════════════════════════════════════════════════════ -->
+<div class="w-full h-10 border-b border-white/5 flex items-center justify-between px-12 text-[14px] tracking-widest font-mono-code bg-[#020406]">
+    <div class="flex items-center gap-10">
+        <div class="flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 status-live"></span>
+            <span class="text-slate-200 uppercase">系統狀態: 在線 / 2026.01.24</span>
+        </div>
+        <div class="hidden md:flex items-center gap-2.5">
+            <span class="text-slate-200">運算集群負載:</span>
+            <span class="text-cyan-400">72%</span>
+        </div>
+        <div class="hidden lg:flex items-center gap-2.5">
+            <span class="w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span class="text-slate-200 uppercase">Data Sync: 2m Ago</span>
+        </div>
+    </div>
+    <div class="flex items-center gap-8">
+        <span class="text-slate-200 uppercase hidden sm:inline">Region: HK / Shenzhen</span>
+        <span class="text-cyan-400 uppercase">API 延遲: 42ms</span>
+    </div>
+</div>
+
+    <!-- ═══════════════════════════════════════════════════════════════
+     固定磨砂玻璃導航欄 - Sticky Header
+     ═══════════════════════════════════════════════════════════════ -->
+<header class="sticky top-0 w-full z-[100] glass-header">
+    <!-- 主導航欄 -->
+    <nav class="flex justify-between items-center px-12 py-4">
+        <!-- Logo -->
+        <div class="flex items-center gap-4">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/20 bg-white/5">
+                <img src="assets/images/logo.png" alt="Towngas Logo" class="w-10 h-10 object-contain">
+            </div>
+            <div class="leading-none">
+                <h1 class="text-3xl font-black tracking-tighter uppercase leading-none bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-emerald-400">
+                    TGAI
+                </h1>
+            </div>
+        </div>
+        
+        <!-- 導航連結 -->
+        <div class="hidden lg:flex items-center gap-10 text-lg font-bold uppercase tracking-wider">
+            <a href="index.html" class="nav-link">首頁</a>
+            <a href="agent-market.html" class="nav-link">Agent超市</a>
+            <a href="plugins.html" class="nav-link">插件倉庫</a>
+            <a href="#" class="nav-link">知識庫</a>
+            <a href="models.html" class="nav-link">模型管理</a>
+            <a href="#" class="nav-link">AI 報告</a>
+            <a href="ainews.html" class="nav-link">AI 快訊</a>
+            <a href="culture.html" class="nav-link">AI文化</a>
+        </div>
+
+        <!-- 搜尋器 + 語言切換 -->
+        <div class="flex items-center gap-5">
+            <!-- 搜尋器 - 簡約風格 -->
+            <div class="search-container relative hidden md:block max-w-[160px] ml-auto">
+                <input type="text" placeholder="搜尋..." class="search-input bg-white/5 border border-white/10 rounded-xl py-2 px-8 text-base outline-none text-slate-200 placeholder:text-slate-200">
+                <svg class="w-4 h-4 text-slate-200 absolute left-3 top-1/2 -translate-y-1/2 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <button class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-lg bg-white/5 border border-white/10 hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all">
+                    <svg class="w-3.5 h-3.5 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- 語言切換 - 繁體/簡體切換 -->
+            <div class="language-switcher flex items-center bg-white/5 rounded-full px-3 py-2 gap-2 border border-white/10 cursor-pointer hover:border-emerald-500/30 transition-all group">
+                <div class="language-icon traditional active w-5 h-5 relative flex items-center justify-center transition-all duration-300 group-hover:scale-110">
+                    <span class="text-slate-200 text-[10px] font-bold">繁</span>
+                </div>
+                <div class="language-icon simplified w-5 h-5 relative flex items-center justify-center transition-all duration-300 group-hover:scale-110 hidden">
+                    <span class="text-slate-200 text-[10px] font-bold">简</span>
+                </div>
+                <svg class="w-3 h-3 text-slate-200 transition-transform duration-300 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </div>
+        </div>
+    </nav>
+</header>
+<script src="js/main.js" defer=""></script>
+
+
+    <!-- 左側導航 -->
+    <aside class="w-72 h-screen sticky top-0 border-r border-white/10 p-8 flex flex-col gap-8 bg-deep/50 backdrop-blur-md">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-emerald-400 flex items-center justify-center font-bold text-black text-xl">T</div>
+            <h1 class="text-2xl font-bold tracking-tighter section-title">TGAI Design</h1>
+        </div>
+        
+        <nav class="flex flex-col gap-4 text-text-secondary">
+            <a href="#colors" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                色彩系統 (Colors)
+            </a>
+            <a href="#typography" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                字體排版 (Typography)
+            </a>
+            <a href="#spacing" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                間距規範 (Spacing)
+            </a>
+            <a href="#navigation" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                導航系統 (Navigation)
+            </a>
+            <a href="#icons" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+                圖標規範 (Icons)
+            </a>
+            <a href="#components" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
+                組件清單 (Components)
+            </a>
+            <a href="#animations" class="sidebar-link py-2 flex items-center gap-2 hover:translate-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
+                動效規範 (Animations)
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-8 border-t border-white/5">
+            <p class="text-xs text-text-muted">最後更新：2026-01-23</p>
+            <p class="text-xs text-text-muted mt-1">版本：1.1 (Liquid Command Center)</p>
+        </div>
+    </aside>
+
+    <!-- 主內容區 -->
+    <main class="flex-1 p-16 max-w-[1200px]">
+        
+        <!-- 首頁介紹 -->
+        <header class="mb-20">
+            <div class="inline-block px-4 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-medium mb-6 animate-pulse">
+                SYSTEM OPERATIONAL
+            </div>
+            <h1 class="text-6xl font-bold mb-6 tracking-tight">設計系統規範</h1>
+            <p class="text-xl text-text-secondary leading-relaxed max-w-3xl">
+                Towngas AI 數字指揮中心的視覺語言規範。基於 MCP 協議優化，結合流體指揮中心 (Liquid Command Center) 與高級玻璃擬態 (Glassmorphism) 風格，確保跨平台的一致性與企業級專業感。
+            </p>
+        </header>
+
+        <!-- 色彩系統 -->
+        <section id="colors" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">01. 色彩系統 (Colors)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 背景色 -->
+                <div class="glass-panel p-8 space-y-6">
+                    <h3 class="text-lg font-bold text-text-muted uppercase tracking-widest">背景色 (Background)</h3>
+                    <div class="space-y-4">
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #020406;"></div>
+                            <div>
+                                <p class="font-bold">Deep Background</p>
+                                <code class="text-cyan-400">#020406</code>
+                                <p class="text-xs text-text-muted mt-1">--bg-deep (絕對深色)</p>
+                            </div>
+                        </div>
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #080C12;"></div>
+                            <div>
+                                <p class="font-bold">Surface Background</p>
+                                <code class="text-cyan-400">#080C12</code>
+                                <p class="text-xs text-text-muted mt-1">--bg-surface (容器背景)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 品牌色 -->
+                <div class="glass-panel p-8 space-y-6">
+                    <h3 class="text-lg font-bold text-text-muted uppercase tracking-widest">品牌色 (Brand)</h3>
+                    <div class="space-y-4">
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #00F2FF;"></div>
+                            <div>
+                                <p class="font-bold">Neural Cyan</p>
+                                <code class="text-cyan-400">#00F2FF</code>
+                                <p class="text-xs text-text-muted mt-1">--tg-cyan (核心品牌色)</p>
+                            </div>
+                        </div>
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #00F5A0;"></div>
+                            <div>
+                                <p class="font-bold">Energy Emerald</p>
+                                <code class="text-cyan-400">#00F5A0</code>
+                                <p class="text-xs text-text-muted mt-1">--tg-emerald (輔助品牌色)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 文字色 -->
+                <div class="glass-panel p-8 space-y-6">
+                    <h3 class="text-lg font-bold text-text-muted uppercase tracking-widest">文字色 (Typography)</h3>
+                    <div class="space-y-4">
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #F8FAFC;"></div>
+                            <div>
+                                <p class="font-bold text-slate-900 bg-white inline-block px-1 rounded">Main Text</p>
+                                <code class="text-cyan-400 ml-2">#F8FAFC</code>
+                                <p class="text-xs text-text-muted mt-1">--text-main (主標題)</p>
+                            </div>
+                        </div>
+                        <div class="color-card flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10">
+                            <div class="w-16 h-16 rounded-xl shadow-lg border border-white/20" style="background: #CBD5E1;"></div>
+                            <div>
+                                <p class="font-bold">Secondary Text</p>
+                                <code class="text-cyan-400">#CBD5E1</code>
+                                <p class="text-xs text-text-muted mt-1">--text-secondary (次要文字)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 字體排版 -->
+        <section id="typography" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">02. 字體排版 (Typography)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="glass-panel p-12 space-y-12">
+                <!-- 字體家族 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="space-y-4">
+                        <h4 class="text-text-muted uppercase text-sm tracking-widest font-bold">數字 / 標題 (Orbitron)</h4>
+                        <div class="text-5xl font-bold font-['Orbitron'] tracking-tighter">10:24:00</div>
+                        <p class="text-text-secondary">用於數據展示、時間、主要裝飾標題。</p>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-text-muted uppercase text-sm tracking-widest font-bold">正文閱讀 (Noto Sans TC)</h4>
+                        <div class="text-4xl font-bold">未來數字指揮</div>
+                        <p class="text-text-secondary leading-relaxed">繁體中文首選字體，確保在各種屏幕尺寸下均有極佳的易讀性。</p>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="text-text-muted uppercase text-sm tracking-widest font-bold">代碼 / 標籤 (JetBrains Mono)</h4>
+                        <div class="text-2xl font-mono text-cyan-400">System.deploy();</div>
+                        <p class="text-text-secondary">用於代碼塊、參數標籤、元數據顯示。</p>
+                    </div>
+                </div>
+
+                <!-- 大小規範 -->
+                <div class="pt-12 border-t border-white/5">
+                    <h4 class="text-text-muted uppercase text-sm tracking-widest font-bold mb-8">大小規範 (Size Scale)</h4>
+                    <div class="space-y-8">
+                        <div class="flex items-end gap-8">
+                            <span class="text-text-muted font-mono w-32">text-2xl (32px)</span>
+                            <span class="text-3xl font-bold">這是頁面主標題的樣式示範</span>
+                        </div>
+                        <div class="flex items-end gap-8">
+                            <span class="text-text-muted font-mono w-32">text-xl (20px)</span>
+                            <span class="text-xl font-bold text-text-main">這是區塊標題或卡片標題的樣式示範</span>
+                        </div>
+                        <div class="flex items-end gap-8">
+                            <span class="text-text-muted font-mono w-32">text-lg (18px)</span>
+                            <span class="text-lg text-text-secondary">這是卡片次要標題的樣式示範</span>
+                        </div>
+                        <div class="flex items-end gap-8">
+                            <span class="text-text-muted font-mono w-32">text-[15px]</span>
+                            <span class="text-[15px] text-text-secondary leading-relaxed">這是標準正文內容，提升後的 15px 確保了良好的可訪問性。所有 13px 以下的文字已統一增加 2px。</span>
+                        </div>
+                        <div class="flex items-end gap-8">
+                            <span class="text-text-muted font-mono w-32">text-[12px]</span>
+                            <span class="text-[12px] text-text-muted uppercase tracking-widest">微型標籤 / 輔助文字 / HUD 數據欄</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 間距規範 -->
+        <section id="spacing" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">03. 間距規範 (Spacing)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="glass-panel p-12 overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b border-white/10 text-text-muted uppercase text-sm tracking-widest">
+                            <th class="pb-6 px-4">尺寸 (Size)</th>
+                            <th class="pb-6 px-4">數值 (Value)</th>
+                            <th class="pb-6 px-4">視覺化示範 (Visual)</th>
+                            <th class="pb-6 px-4">使用場景 (Usage)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-text-secondary">
+                        <tr class="border-b border-white/5">
+                            <td class="py-6 px-4 font-mono">xs (1)</td>
+                            <td class="py-6 px-4">4px</td>
+                            <td class="py-6 px-4"><div class="h-1 bg-cyan-400 w-1 rounded"></div></td>
+                            <td class="py-6 px-4">圖標與文字間距</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-6 px-4 font-mono">sm (2)</td>
+                            <td class="py-6 px-4">8px</td>
+                            <td class="py-6 px-4"><div class="h-2 bg-cyan-400 w-2 rounded"></div></td>
+                            <td class="py-6 px-4">元素內部間距 / 緊湊排版</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-6 px-4 font-mono">md (4)</td>
+                            <td class="py-6 px-4">16px</td>
+                            <td class="py-6 px-4"><div class="h-4 bg-cyan-400 w-4 rounded"></div></td>
+                            <td class="py-6 px-4">卡片內部間距 / 常規間距</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-6 px-4 font-mono">lg (6)</td>
+                            <td class="py-6 px-4">24px</td>
+                            <td class="py-6 px-4"><div class="h-6 bg-cyan-400 w-6 rounded"></div></td>
+                            <td class="py-6 px-4">區塊內部間距 / 大卡片間距</td>
+                        </tr>
+                        <tr class="border-b border-white/5">
+                            <td class="py-6 px-4 font-mono">xl (8)</td>
+                            <td class="py-6 px-4">32px</td>
+                            <td class="py-6 px-4"><div class="h-8 bg-cyan-400 w-8 rounded"></div></td>
+                            <td class="py-6 px-4">區塊分隔</td>
+                        </tr>
+                        <tr>
+                            <td class="py-6 px-4 font-mono">2xl (12)</td>
+                            <td class="py-6 px-4">48px</td>
+                            <td class="py-6 px-4"><div class="h-12 bg-cyan-400 w-12 rounded"></div></td>
+                            <td class="py-6 px-4">頁面主要區域分隔 / 容器內距</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 導航系統 -->
+        <section id="navigation" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">04. 導航系統 (Navigation)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="space-y-12">
+                <!-- Header Structure -->
+                <div class="glass-panel p-8 space-y-8">
+                    <h3 class="text-xl font-bold">頂部導航結構 (Header Structure)</h3>
+                    <div class="border border-white/10 rounded-xl overflow-hidden bg-bg-deep shadow-2xl">
+                        <!-- HUD Status Bar -->
+                        <div class="h-10 bg-white/5 border-b border-white/5 flex items-center justify-between px-6">
+                            <div class="flex items-center gap-4 text-[12px] text-text-muted font-mono">
+                                <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> SYSTEM READY</span>
+                                <span>UTC: 2026-01-23 10:24</span>
+                            </div>
+                            <div class="flex items-center gap-4 text-[12px] text-text-muted">
+                                <span>LATENCY: 24ms</span>
+                                <span>SERVER: HK-CENTRAL-01</span>
+                            </div>
+                        </div>
+                        <!-- Main Nav -->
+                        <div class="h-20 flex items-center justify-between px-8 bg-white/5 backdrop-blur-xl">
+                            <div class="text-3xl font-bold bg-gradient-to-r from-cyan-400 to-emerald-400 bg-clip-text text-transparent font-['Orbitron']">TGAI</div>
+                            <nav class="hidden lg:flex items-center gap-8 text-[15px] font-medium text-white">
+                                <a href="#" class="text-cyan-400 border-b-2 border-cyan-400 py-1">首頁</a>
+                                <a href="#" class="hover:text-cyan-400 transition-colors">Agent超市</a>
+                                <a href="#" class="hover:text-cyan-400 transition-colors">插件倉庫</a>
+                                <a href="#" class="hover:text-cyan-400 transition-colors">AI 報告</a>
+                            </nav>
+                            <div class="flex items-center gap-6">
+                                <!-- Search -->
+                                <div class="relative max-w-[160px]">
+                                    <input type="text" placeholder="搜尋功能..." class="w-full bg-white/5 border border-white/10 rounded-full px-4 py-1.5 text-sm focus:outline-none focus:border-cyan-500/50">
+                                </div>
+                                <!-- Language Switcher -->
+                                <button class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center text-sm font-bold text-cyan-400 hover:bg-white/10 transition-all">繁</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h4 class="font-bold text-cyan-400 mb-2">HUD 狀態欄</h4>
+                            <p class="text-sm text-text-secondary leading-relaxed">高度 40px (h-10)，展示系統元數據與實時狀態。字體大小 12px，使用 JetBrains Mono 增加技術感。</p>
+                        </div>
+                        <div class="p-6 bg-white/5 rounded-2xl border border-white/10">
+                            <h4 class="font-bold text-cyan-400 mb-2">主導航區域</h4>
+                            <p class="text-sm text-text-secondary leading-relaxed">高度 80px，導航文字大小提升至 15px。Logo 採用 text-3xl 配合品牌漸變色。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 圖標規範 -->
+        <section id="icons" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">05. 圖標規範 (Icons)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="glass-panel p-12 space-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-bold">風格與線寬 (Style & Stroke)</h3>
+                        <p class="text-text-secondary">統一使用 **線性圖標 (Stroke icons)**，默認線寬為 `stroke-width: 1.5`。確保在深色背景下具有足夠的細節與通透感。</p>
+                        <div class="flex gap-6">
+                            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
+                                </svg>
+                            </div>
+                            <div class="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                                <svg class="w-8 h-8 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <h3 class="text-xl font-bold">尺寸規範 (Sizes)</h3>
+                        <div class="flex items-end gap-10">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-10 h-10 flex items-center justify-center border border-white/5 bg-white/5 rounded">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="1.5"></path></svg>
+                                </div>
+                                <span class="text-[10px] font-mono text-text-muted">16px (w-4)</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-12 h-12 flex items-center justify-center border border-white/5 bg-white/5 rounded">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="1.5"></path></svg>
+                                </div>
+                                <span class="text-[10px] font-mono text-text-muted">20px (w-5)</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="w-14 h-14 flex items-center justify-center border border-white/5 bg-white/5 rounded">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke-width="1.5"></path></svg>
+                                </div>
+                                <span class="text-[10px] font-mono text-text-muted">24px (w-6)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 組件清單 -->
+        <section id="components" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">06. 組件清單 (Components)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="space-y-12">
+                <!-- 按鈕系統 -->
+                <div class="glass-panel p-12">
+                    <h3 class="text-xl font-bold mb-8">按鈕系統 (Buttons)</h3>
+                    <div class="flex flex-wrap gap-8 items-center">
+                        <div class="space-y-4">
+                            <button class="btn-action">立即開始 .START</button>
+                            <p class="text-xs text-text-muted font-mono text-center">.btn-action</p>
+                        </div>
+                        <div class="space-y-4">
+                            <button class="btn-glass">查看詳情 INFO</button>
+                            <p class="text-xs text-text-muted font-mono text-center">.btn-glass</p>
+                        </div>
+                        <div class="space-y-4">
+                            <button class="rounded-full bg-white/5 border border-white/10 px-6 py-2 hover:bg-white/10 transition-all text-sm">標籤篩選器</button>
+                            <p class="text-xs text-text-muted font-mono text-center">.rounded-full.bg-white/5</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 卡片系統 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    <!-- Neu Card -->
+                    <div class="glass-panel p-12">
+                        <h3 class="text-xl font-bold mb-8">智能體卡片 (The Neu-Card)</h3>
+                        <div class="neu-card p-8 group cursor-pointer">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono border border-emerald-500/20">STABLE</span>
+                            </div>
+                            <h4 class="text-2xl font-bold mb-2 group-hover:text-cyan-400 transition-colors">Neural Analyser</h4>
+                            <p class="text-text-secondary text-sm mb-6">高級神經網絡分析引擎，提供實時數據監測與異常檢測服務。</p>
+                            
+                            <!-- Reveal Content -->
+                            <div class="pt-6 border-t border-white/5 space-y-4">
+                                <div class="flex justify-between text-xs font-mono">
+                                    <span class="text-text-muted">CORE LOAD</span>
+                                    <span class="text-cyan-400">42%</span>
+                                </div>
+                                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-gradient-to-r from-cyan-400 to-emerald-400" style="width: 42%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-sm text-text-muted mt-6 leading-relaxed">特色：Hover 時上浮、邊框變亮、揭示底部進度條等深度內容。</p>
+                    </div>
+
+                    <!-- Plugin Card -->
+                    <div class="glass-panel p-12">
+                        <h3 class="text-xl font-bold mb-8">插件卡片 (The Plugin-Card)</h3>
+                        <div class="p-8 group cursor-pointer border border-blue-500/30 rounded-[24px_0_24px_0] bg-[rgba(10,15,25,0.6)] relative overflow-hidden" style="background-image: linear-gradient(rgba(0, 93, 170, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 93, 170, 0.05) 1px, transparent 1px); background-size: 20px 20px;">
+                            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-blue-400/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity animate-[scan_2s_linear_infinite]"></div>
+                            
+                            <div class="flex items-center gap-4 mb-6">
+                                <div class="w-10 h-10 rounded-lg bg-blue-500/20 border border-blue-500/40 flex items-center justify-center">
+                                    <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
+                                    </svg>
+                                </div>
+                                <h4 class="text-xl font-bold">Data Connector</h4>
+                            </div>
+                            <p class="text-text-secondary text-sm">用於對接各類企業數據源，支援 RESTful, GraphQL 及 WebSocket 協議。</p>
+                            <div class="mt-6 flex items-center justify-between">
+                                <span class="text-[11px] font-mono text-blue-400/70 tracking-tighter">VER: 2.4.0-STABLE</span>
+                                <button class="text-xs text-white/50 hover:text-white transition-colors">查看文件 →</button>
+                            </div>
+                        </div>
+                        <p class="text-sm text-text-muted mt-6 leading-relaxed">特色：非對稱圓角、網格背景、動態掃描線效果，強調模組化技術感。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 動效規範 -->
+        <section id="animations" class="mb-24 scroll-mt-16">
+            <h2 class="text-3xl font-bold mb-12 flex items-center gap-4">
+                <span class="section-title">07. 動效規範 (Animations)</span>
+                <div class="h-px flex-1 bg-gradient-to-right from-white/10 to-transparent"></div>
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="glass-panel p-8 text-center space-y-6">
+                    <div class="w-20 h-20 mx-auto rounded-full bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center relative">
+                        <div class="absolute inset-0 rounded-full border border-cyan-500/50 animate-ping"></div>
+                        <div class="w-4 h-4 rounded-full bg-cyan-400 shadow-[0_0_15px_rgba(0,242,255,0.8)]"></div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2">狀態脈衝 (Pulse)</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">用於顯示系統運行狀態、實時數據流動。強調「系統在線」的生命力。</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 text-center space-y-6 group">
+                    <div class="w-20 h-20 mx-auto rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 group-hover:border-cyan-500/50 group-hover:shadow-[0_0_30px_rgba(0,242,255,0.15)]">
+                        <svg class="w-8 h-8 text-text-secondary group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2">微交互 (Micro-interact)</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">0.3s 的快速響應，ease 緩動函數。提供即時的視覺反饋而不拖泥帶水。</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel p-8 text-center space-y-6">
+                    <div class="w-full h-20 rounded-xl bg-white/5 border border-white/10 overflow-hidden relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full animate-[shimmer_2s_infinite]"></div>
+                        <div class="flex items-center h-full px-4 gap-4">
+                            <div class="w-12 h-3 rounded bg-white/10"></div>
+                            <div class="flex-1 h-3 rounded bg-white/10"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h4 class="font-bold mb-2">加載動效 (Skeleton)</h4>
+                        <p class="text-xs text-text-muted leading-relaxed">採用微光閃爍 (Shimmer) 效果，比旋轉圖標更具現代感，減少用戶等待焦慮。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="mt-32 pt-16 border-t border-white/5 text-center text-text-muted text-sm">
+            <p>© 2026 Towngas AI Center. All Rights Reserved. 通用設計系統 V1.1</p>
+            <div class="mt-4 flex justify-center gap-8">
+                <a href="#" class="hover:text-cyan-400 transition-colors">設計規範</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">Github 倉庫</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">組件下載</a>
+            </div>
+        </footer>
+    </main>
+
+    <style>
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(800%); }
+        }
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 自定義捲軸 */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-deep);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--tg-cyan);
+        }
+    </style>
+
+    <script>
+        // 簡單的導航激活邏輯
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    document.querySelectorAll('.sidebar-link').forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

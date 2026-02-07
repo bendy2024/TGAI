@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <include src="components/head-common.html"></include>
+    <title>模型管理 | Towngas AI</title>
+    <style>
+        /* 模型卡片專屬樣式 */
+        .model-card {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .model-card:hover {
+            background: rgba(0, 245, 160, 0.08) !important;
+            transform: translateY(-5px);
+        }
+
+        /* 懸浮按鈕容器 */
+        .model-actions {
+            position: absolute;
+            inset: 0;
+            background: rgba(2, 4, 6, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .model-card:hover .model-actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .banner-glow-models {
+            background: radial-gradient(circle at center, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-white relative">
+    
+    <!-- 背景層 -->
+    <div class="ambient-glow"></div>
+    <div class="grid-matrix"></div>
+
+    <include src="components/hud.html"></include>
+    <include src="components/header.html"></include>
+
+    <!-- 主內容區 -->
+    <main class="max-w-[1600px] mx-auto px-12 pb-32">
+        
+        <!-- Banner -->
+        <section class="relative w-full h-[240px] flex flex-col items-center justify-center mb-16 banner-glow-models rounded-[2.5rem] mt-12 border border-white/5">
+            <div class="absolute inset-0 bg-[url('assets/images/grid-pattern.png')] opacity-10 rounded-[2.5rem]"></div>
+            <h1 class="text-5xl font-black text-white mb-4 tracking-tight font-orbitron">模型管理中心</h1>
+            <p class="text-emerald-400 text-sm tracking-[0.3em] uppercase font-mono-code">Model Governance & Deployment</p>
+        </section>
+
+        <!-- 模型列表網格 -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-[1200px] mx-auto">
+            
+            <!-- 模型卡片 1 -->
+            <div class="neu-card p-10 model-card group">
+                <div class="flex gap-8 items-start relative z-1">
+                    <!-- 圖標/占位符 -->
+                    <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                        <svg class="w-10 h-10 text-slate-200 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- 內容 -->
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-tight">通義千問3-文本生成大模型</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 font-light">
+                            Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent、MCP 執行及代碼能力。
+                        </p>
+                        <div class="flex justify-end items-center">
+                            <span class="text-[13px] font-mono-code text-slate-200 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                上架時間：<span class="text-red-400/80">2026/1/3 19:00</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 懸浮操作 (由 sketch 中的綠色卡片演變而來) -->
+                <div class="model-actions">
+                    <button class="px-8 py-3 rounded-xl bg-cyan-500 text-black font-bold text-sm hover:bg-cyan-400 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20">查看詳情</button>
+                    <button class="px-8 py-3 rounded-xl bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition-all hover:scale-105 shadow-lg shadow-emerald-500/20">立即使用</button>
+                </div>
+            </div>
+
+            <!-- 模型卡片 2 -->
+            <div class="neu-card p-10 model-card group">
+                <div class="flex gap-8 items-start relative z-1">
+                    <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                        <svg class="w-10 h-10 text-slate-200 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.673.337a4 4 0 01-2.574.345l-2.387-.477a2 2 0 00-1.022.547l-1.5 1.5a2 2 0 00-.572 1.414v1.5a2 2 0 002 2h1.5a2 2 0 001.414-.572l1.5-1.5a2 2 0 00.547-1.022l.477-2.387a6 6 0 00-.517-3.86l-.337-.673a4 4 0 01-.345-2.574l.477-2.387a2 2 0 00-.547-1.022l-1.5-1.5a2 2 0 00-1.414-.572H6.5a2 2 0 00-2 2v1.5a2 2 0 00.572 1.414l1.5 1.5z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-tight">DeepSeek-V3 多模態模型</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 font-light">
+                            全新的 V3 架構，具備卓越的視覺理解與邏輯推理能力，支持超長上下文處理，專為複雜業務場景優化。
+                        </p>
+                        <div class="flex justify-end items-center">
+                            <span class="text-[13px] font-mono-code text-slate-200 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                上架時間：<span class="text-red-400/80">2026/1/5 10:30</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-actions">
+                    <button class="px-8 py-3 rounded-xl bg-cyan-500 text-black font-bold text-sm hover:bg-cyan-400 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20">查看詳情</button>
+                    <button class="px-8 py-3 rounded-xl bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition-all hover:scale-105 shadow-lg shadow-emerald-500/20">立即使用</button>
+                </div>
+            </div>
+
+            <!-- 模型卡片 3 -->
+            <div class="neu-card p-10 model-card group">
+                <div class="flex gap-8 items-start relative z-1">
+                    <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                        <svg class="w-10 h-10 text-slate-200 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-tight">GPT-4o 企業定制版</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 font-light">
+                            針對集團數據進行微調，具備更強的行業合規性與專業領域知識，響應速度提升 40%。
+                        </p>
+                        <div class="flex justify-end items-center">
+                            <span class="text-[13px] font-mono-code text-slate-200 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                上架時間：<span class="text-red-400/80">2025/12/28 14:00</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-actions">
+                    <button class="px-8 py-3 rounded-xl bg-cyan-500 text-black font-bold text-sm hover:bg-cyan-400 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20">查看詳情</button>
+                    <button class="px-8 py-3 rounded-xl bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition-all hover:scale-105 shadow-lg shadow-emerald-500/20">立即使用</button>
+                </div>
+            </div>
+
+            <!-- 模型卡片 4 -->
+            <div class="neu-card p-10 model-card group">
+                <div class="flex gap-8 items-start relative z-1">
+                    <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center shrink-0 shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                        <svg class="w-10 h-10 text-slate-200 group-hover:text-emerald-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white mb-4 tracking-tight">Sora 視頻生成引擎</h3>
+                        <p class="text-slate-200 text-sm leading-relaxed mb-6 font-light">
+                            集團內部視頻營銷與創意工具，支持根據文本指令生成高品質、符合品牌調性的短視頻內容。
+                        </p>
+                        <div class="flex justify-end items-center">
+                            <span class="text-[13px] font-mono-code text-slate-200 bg-white/5 px-3 py-1 rounded-full border border-white/5">
+                                上架時間：<span class="text-red-400/80">2026/01/10 09:00</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="model-actions">
+                    <button class="px-8 py-3 rounded-xl bg-cyan-500 text-black font-bold text-sm hover:bg-cyan-400 transition-all hover:scale-105 shadow-lg shadow-cyan-500/20">查看詳情</button>
+                    <button class="px-8 py-3 rounded-xl bg-emerald-500 text-black font-bold text-sm hover:bg-emerald-400 transition-all hover:scale-105 shadow-lg shadow-emerald-500/20">立即使用</button>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- 頁腳 -->
+    <footer class="bg-black/80 border-t border-white/10 pt-20 pb-12 px-12 backdrop-blur-xl">
+        <div class="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 mb-16">
+            <div>
+                <h5 class="text-white font-bold mb-8 text-sm uppercase tracking-widest border-l-2 border-emerald-500 pl-4">關於我們</h5>
+                <ul class="space-y-4 text-sm text-slate-200">
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">公司介紹</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">發展歷程</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">合作夥伴</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">加入我們</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-8 text-sm uppercase tracking-widest border-l-2 border-emerald-500 pl-4">產品中心</h5>
+                <ul class="space-y-4 text-sm text-slate-200">
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">Agent 門戶</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">工具超市</a></li>
+                    <li><a href="models.html" class="hover:text-emerald-400 transition-colors">模型中心</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">API 接入</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-8 text-sm uppercase tracking-widest border-l-2 border-emerald-500 pl-4">資源文檔</h5>
+                <ul class="space-y-4 text-sm text-slate-200">
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">技術文檔</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">API 參考</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">最佳實踐</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">常見問題</a></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="text-white font-bold mb-8 text-sm uppercase tracking-widest border-l-2 border-emerald-500 pl-4">聯繫與支持</h5>
+                <ul class="space-y-4 text-sm text-slate-200">
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">技術支持</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">反饋中心</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">商務合作</a></li>
+                    <li><a href="#" class="hover:text-emerald-400 transition-colors">媒體查詢</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="max-w-[1200px] mx-auto pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-10 text-[12px] text-slate-600 font-mono-code tracking-widest uppercase">
+                <span>NODE_ID: HK-GAS-AI-PROD</span>
+                <span class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-500 status-live"></span> 數據連線正常</span>
+            </div>
+            <p class="text-[12px] text-slate-600 font-mono-code tracking-widest">© 2026 THE HONG KONG AND CHINA GAS COMPANY LIMITED. ALL RIGHTS RESERVED.</p>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

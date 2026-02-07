@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TGAI Robot Preview</title>
+    <style>
+        :root {
+            --tg-cyan: #00F2FF;
+            --tg-bg: #0f172a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--tg-bg);
+            overflow: hidden;
+        }
+
+        .robot-head {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid rgba(0, 242, 255, 0.4);
+            border-radius: 48px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 
+                0 0 50px rgba(0, 242, 255, 0.15),
+                inset 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        .eyes-container {
+            display: flex;
+            gap: 40px;
+            filter: drop-shadow(0 0 12px var(--tg-cyan));
+        }
+
+        .eye {
+            width: 16px;
+            height: 16px;
+            background-color: var(--tg-cyan);
+            border-radius: 50%;
+            animation: blink 4s infinite;
+        }
+
+        @keyframes blink {
+            0%, 45%, 55%, 100% {
+                transform: scaleY(1);
+            }
+            50% {
+                transform: scaleY(0.1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="robot-head">
+        <div class="eyes-container">
+            <div class="eye"></div>
+            <div class="eye"></div>
+        </div>
+    </div>
+
+</body>
+</html>

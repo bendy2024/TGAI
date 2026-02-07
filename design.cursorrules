@@ -1,0 +1,72 @@
+Towngas AI 數字指揮中心 - 開發與設計指引
+1. 核心視覺風格 (Visual Identity)
+設計風格：流體指揮中心 (Liquid Command Center)、企業級未來主義、高級玻璃擬態 (Glassmorphism)。
+配色方案：
+--bg-deep: #020406 (絕對深色背景，減少純黑的沉重感)
+--tg-cyan: #00F2FF (核心品牌色：神經網絡青)
+--tg-emerald: #00F5A0 (核心輔助色：能源綠)
+--text-main: #F8FAFC (標題文字)
+--text-secondary: #CBD5E1 (次要文字，確保在深色背景下清晰可讀，嚴禁使用過暗的灰色)
+--border-white: rgba(255, 255, 255, 0.12) (邊框強度)
+字體規範：
+數字/標題：'Orbitron', sans-serif (科技感數據)
+正文閱讀：'Noto Sans TC', sans-serif (繁體中文易讀性)
+代碼/數據標籤：'JetBrains Mono', monospace
+2. 佈局規則 (Layout Rules)
+全局背景：必須包含 ambient-glow (徑向漸變光暈) 與 grid-matrix (微量網格線)，確保背景不沉悶。
+導航欄 (Header)：高度固定 3rem (h-12)，背景 backdrop-blur-xl，必須區分搜尋器與語言切換為兩個獨立組件。
+頁腳 (Footer)：採用四列式結構（關於我們、產品、資源、聯繫我們），字體大小 14px，顏色為 slate-400。
+容器：最大寬度 max-w-[1600px]，兩側留白 px-12。
+3. 組件庫樣式指南 (Component Library)
+A. 智能體卡片 (The Neu-Card)
+結構：必須包含 reveal-content 類。
+默認狀態：僅顯示標題、圖標和極短簡介。
+Hover 狀態：
+transform: translateY(-5px)
+border-color: rgba(0, 242, 255, 0.5)
+reveal-content 由 max-height: 0 變為 max-height: 400px。
+揭示內容：包含詳細參數進度條和 btn-action 操作按鈕。
+B. 操作按鈕 (Buttons)
+主按鈕 (btn-action)：漸變色從 tg-cyan 到 tg-emerald，文字顏色為深色 #020406，加粗，Hover 時有發光陰影 (box-shadow) 與微放大。
+次要按鈕 (btn-glass)：半透明背景 white/5，邊框 white/10，Hover 時背景變亮且邊框變為 tg-emerald。
+標籤按鈕 (tag-btn)：圓角 rounded-full，常用於快捷提問，Hover 時文字與邊框變為能源綠。
+C. 控制台輸入 (Command Console)
+設計：圓角 rounded-[2rem]，頂部帶有 font-mono 的狀態標籤，底部帶有大圖標執行按鈕。
+4. 語言與文案規範 (Copywriting)
+強制繁體中文：所有 UI 標籤、導航、按鈕、描述必須使用繁體中文。
+專有名詞例外：Agent, API, Tokens, DeepSeek, GPT4, GPU, Latency, HUD 等科技專有名詞保持英文或大寫。
+語氣：專業、精準、具備企業前瞻性。
+5. 交互行為 (Interaction Patterns)
+內容覺醒：資訊不要一次鋪滿，優先使用 Hover 觸發機制揭示深度資訊。
+動態感：重要狀態位使用 animate-pulse (如系統運行狀態燈)。
+捲軸：寬度 5px，顏色為 slate-700，Hover 變為 tg-cyan。
+6. 新頁面開發協議 (New Page Development Protocol)
+   - 啟動階段：自動讀取 `design-system.md` (令牌) 與 `components-catalog.html` (組件)。
+   - 結構規劃：嚴格遵循 `design-system.md` 第 9 點的「頁面模板結構」。
+   - 組件複用：優先從 `components-catalog.html` 複製現有的 HTML/CSS 代碼塊，嚴禁重複發明輪子。
+   - 交互行為：
+     - `neu-card` 使用 Hover 揭示動效（reveal-content）
+     - `plugin-card` 使用非對稱圓角設計（左上/右下 24px）、掃描線動效（scan-line）與微放大效果
+   - 語言檢查：強制繁體中文，科技名詞除外。
+
+7. 最新設計要求更新 (2026年1月21日)
+   - 導航菜單：新增「AI 報告」頁面連結，位置在「AI 快訊」之前
+   - 可訪問性：所有13px及以下的文字統一增大2px，提升年長用戶閱讀體驗
+   - 顏色對比：導航菜單文字在非當前狀態下顏色從灰色改為白色(#FFFFFF)
+   - 文案更新：
+     - 「綠色燃料」改為「延伸業務」
+     - 「待上線板塊」去掉「板塊」二字，簡化為「待上線」
+   - 語言選擇器：從文字形式改為圖標形式（繁體/簡體切換）
+   - 搜索框優化：
+     - 默認狀態下適當縮短搜索框寬度（max-w-[160px]）
+     - 點擊擴展時往左邊延伸，避免與語言選擇器重疊
+   - Logo更新：
+     - 移除「Towngas AI中心」文字
+     - 放大「TGAI」文字（text-3xl）
+     - 為「TGAI」文字應用漸變色效果（from-cyan-400 to-emerald-400）
+   - 實施要求：
+     - 所有修改需保持響應式設計
+     - 確保在各類屏幕尺寸下都能正常顯示
+     - 修改後需進行跨瀏覽器測試（Chrome, Firefox, Safari, Edge）
+     - 保持整體設計風格的一致性
+     - 所有頁面需同步更新（index.html, agent-market.html, ainews.html, culture.html, plugins.html）
