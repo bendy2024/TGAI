@@ -96,7 +96,7 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-white);
             border-radius: 12px;
-            height: 40px;
+            height: 44px;
             display: flex;
             align-items: center;
             padding: 0 12px;
@@ -120,7 +120,10 @@
         /* 分類選項卡 */
         .category-tab {
             white-space: nowrap;
-            padding: 8px 16px;
+            padding: 0 16px;
+            height: 44px;
+            display: flex;
+            align-items: center;
             font-size: 15px;
             color: rgba(255, 255, 255, 0.6);
             transition: all 0.3s ease;
@@ -283,7 +286,7 @@
     <div class="app-container" data-page="agent-home">
         <!-- 頂部導航 -->
         <header class="safe-area-top px-5 py-4 flex items-center justify-between" data-section="header">
-            <button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10">
+            <button class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
@@ -323,7 +326,7 @@
                     <button class="category-tab">延伸業務</button>
                     <button class="category-tab">水務業務</button>
                 </div>
-                <button class="flex items-center gap-1 ml-4 pl-4 border-l border-white/10 text-white/60 text-sm font-medium">
+                <button class="flex items-center gap-1 ml-4 pl-4 border-l border-white/10 text-white/60 text-sm font-medium h-[44px]">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
                     </svg>

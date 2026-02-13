@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>插件倉庫 - TGAI Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-white: rgba(255, 255, 255, 0.12);
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-bg: #010204;
+            --card-radius: 24px;
+            --nav-height: 72px;
+        }
+
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            background-color: var(--tg-bg);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        .safe-area-top { padding-top: env(safe-area-inset-top); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        .neu-card {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-white);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--card-radius);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .neu-card:active { transform: scale(0.98); border-color: var(--tg-cyan); }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
+            color: #000;
+            font-weight: 700;
+            border-radius: 12px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .btn-action:active { transform: scale(0.95); opacity: 0.9; }
+
+        .btn-glass {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
+            color: #fff;
+            font-weight: 600;
+            border-radius: 12px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .btn-glass:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.95); }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
+            border-radius: 12px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            flex: 1;
+            margin: 0 12px;
+        }
+
+        .category-tab {
+            white-space: nowrap;
+            padding: 0 16px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .category-tab.active { color: var(--tg-cyan); font-weight: 700; }
+        .category-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background: var(--tg-cyan);
+            box-shadow: 0 0 10px var(--tg-cyan);
+        }
+
+        .nav-wrapper { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 400px; z-index: 100; }
+        .main-nav { height: var(--nav-height); background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 36px; display: flex; align-items: center; justify-content: space-around; padding: 0 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); transition: all 0.3s ease; }
+        .nav-item.active { color: var(--tg-cyan); }
+        .nav-label { font-size: 11px; }
+
+        .banner-card { height: 120px; background: linear-gradient(135deg, rgba(0, 242, 255, 0.1) 0%, rgba(0, 245, 160, 0.1) 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+        .banner-card::before { content: ''; position: absolute; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, var(--tg-cyan), transparent, var(--tg-emerald), transparent); animation: rotate 10s linear infinite; opacity: 0.1; }
+        @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+
+        /* 篩選彈窗樣式 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 200;
+            display: none; /* 默認隱藏 */
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .filter-modal {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(40px);
+            border: 1px solid var(--border-white);
+            border-radius: 32px;
+            padding: 32px 24px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.active .filter-modal {
+            transform: scale(1);
+        }
+
+        .filter-section {
+            display: grid;
+            grid-template-cols: 80px 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            padding-top: 2px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+        }
+
+        .filter-option {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .filter-option.active {
+            color: var(--tg-cyan);
+            font-weight: 700;
+        }
+
+        .selected-tag {
+            background: rgba(0, 242, 255, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            color: var(--tg-cyan);
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .clear-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .tag {
+            padding: 2px 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--tg-cyan);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.025em;
+        }
+        .tag::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--tg-cyan);
+            box-shadow: 0 0 10px var(--tg-cyan), 0 0 20px var(--tg-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" data-page="plugin-home">
+        <!-- 頂部導航 -->
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between" data-section="header">
+            <button class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </button>
+            <div class="search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" class="mr-2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="搜索 插件" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/40">
+            </div>
+            <div class="relative">
+                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/10">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                </div>
+                <div class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-[#010204]"></div>
+            </div>
+        </header>
+
+        <!-- Banner 區域 -->
+        <section class="px-5 mb-6" data-section="banner">
+            <div class="banner-card neu-card">
+                <div class="relative z-10 text-center">
+                    <h2 class="text-xl font-black tracking-widest text-white/90">插件倉庫</h2>
+                    <p class="text-xs text-white/50 mt-1 tracking-widest uppercase">Plugin Store Banner</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 分類標籤 -->
+        <section class="mb-6" data-section="categories">
+            <div class="flex items-center px-5">
+                <div class="flex overflow-x-auto no-scrollbar gap-2 flex-1">
+                    <button class="category-tab active">商業服務</button>
+                    <button class="category-tab">生活方式</button>
+                    <button class="category-tab">視頻圖形</button>
+                    <button class="category-tab">效率工具</button>
+                    <button class="category-tab">學習教育</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 插件列表 -->
+        <main class="px-5 space-y-5" data-section="plugin-list">
+            <!-- 卡片 1 -->
+            <div class="neu-card p-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <h3 class="text-base font-bold text-white">全國快捷接口</h3>
+                            <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
+                        </div>
+                        <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="tag">商業服務</span>
+                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 2 -->
+            <div class="neu-card p-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4h16v16H4z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <h3 class="text-base font-bold text-white">Python代碼解釋器</h3>
+                            <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
+                        </div>
+                        <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="tag">商業服務</span>
+                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 3 -->
+            <div class="neu-card p-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="9" stroke-width="1.5"></circle>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <h3 class="text-base font-bold text-white">天氣預報查詢</h3>
+                            <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
+                        </div>
+                        <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="tag">商業服務</span>
+                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片 4 -->
+            <div class="neu-card p-5">
+                <div class="flex items-start gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 3v18m9-9H3"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between">
+                            <h3 class="text-base font-bold text-white">通義千問3-文本生成大模型</h3>
+                            <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
+                        </div>
+                        <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
+                        <div class="mt-4 flex items-center justify-between">
+                            <span class="tag">商業服務</span>
+                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- 底部導航 -->
+        <div class="nav-wrapper">
+            <nav class="main-nav">
+                <a href="agent-home-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span class="nav-label">Agent</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span class="nav-label">插件</span>
+                </a>
+                <a href="model-detail-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span class="nav-label">模型</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 20l-7-7 7-7"></path>
+                        <path d="M12 20l-7-7 7-7"></path>
+                    </svg>
+                    <span class="nav-label">快訊</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                    </svg>
+                    <span class="nav-label">文化</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>
+

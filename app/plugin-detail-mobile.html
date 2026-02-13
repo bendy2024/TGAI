@@ -3,30 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>插件詳情 | TGAI Mobile</title>
+    <title>插件詳情 - TGAI Mobile</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Noto+Sans+HK:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --border-white: rgba(255, 255, 255, 0.08);
+            --border-white: rgba(255, 255, 255, 0.12);
             --tg-cyan: #00F2FF;
             --tg-emerald: #00F5A0;
             --tg-bg: #010204;
-            --glass-bg: rgba(15, 23, 42, 0.4);
             --card-radius: 24px;
         }
 
         body {
             font-family: 'Noto Sans HK', sans-serif;
-            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
+            background: var(--tg-bg);
             color: #ffffff;
             -webkit-tap-highlight-color: transparent;
-            overscroll-behavior-y: none;
             display: flex;
             justify-content: center;
-            letter-spacing: 0.02em;
         }
 
         .app-container {
@@ -37,367 +34,305 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 80px rgba(0,0,0,0.8);
             overflow-x: hidden;
+            padding-bottom: 40px;
         }
 
         .safe-area-top { padding-top: env(safe-area-inset-top); }
-        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        .section-title {
+        .header-action {
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 16px;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
+            transition: all 0.2s;
         }
+        .header-action:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.1); }
 
-        .section-indicator {
-            width: 4px;
-            height: 18px;
-            border-radius: 2px;
-        }
-
-        .indicator-blue { background: var(--tg-cyan); }
-        .indicator-orange { background: #F59E0B; }
-
-        .desc-text {
+        .section-title {
             font-size: 16px;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
-            text-align: justify;
+            font-weight: 700;
+            color: var(--tg-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: var(--tg-cyan);
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--tg-cyan);
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-white);
+            border-radius: 20px;
+            padding: 16px;
         }
 
         .param-item {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.85);
-            padding: 4px 0;
+            font-family: 'Courier New', Courier, monospace;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        .param-desc {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            margin-bottom: 12px;
         }
 
-        .neu-card {
-            background: rgba(15, 23, 42, 0.5);
+        .source-link {
+            color: #3B82F6;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .tag-pill {
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-white);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: var(--card-radius);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Modal Styles */
+        /* 彈窗樣式 */
         .modal-overlay {
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
             backdrop-filter: blur(8px);
-            z-index: 100;
-            display: flex;
+            z-index: 1000;
+            display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
+        .modal-overlay.active { display: flex; }
 
-        .modal-content {
+        .feedback-modal {
             width: 100%;
-            max-width: 380px;
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 32px;
-            color: #ffffff;
-            padding: 32px 24px;
-            position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            max-width: 360px;
+            background: #ffffff;
+            border-radius: 16px;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            color: #333;
         }
 
-        .modal-title {
-            font-size: 20px;
-            font-weight: 700;
-            text-align: center;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
         }
 
-        .form-label {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.5);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
+        .feedback-label {
+            color: #1e293b;
+            font-size: 14px;
+            margin-bottom: 4px;
         }
-
-        .form-value {
-            font-size: 16px;
-            font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            margin-left: 8px;
+        .feedback-value {
+            color: #475569;
+            font-size: 14px;
+            margin-bottom: 12px;
         }
-
-        .required-star {
-            color: #ff4d4d;
-            margin-right: 4px;
-        }
-
         .feedback-textarea {
             width: 100%;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 16px;
-            padding: 16px;
-            font-size: 15px;
-            color: #ffffff;
+            height: 240px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 14px;
             resize: none;
             outline: none;
-            transition: all 0.3s;
+            margin-top: 8px;
         }
-
-        .feedback-textarea:focus {
-            border-color: var(--tg-cyan);
-            background: rgba(255, 255, 255, 0.05);
-        }
+        .feedback-textarea:focus { border-color: #2563eb; }
 
         .btn-cancel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.6);
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 600;
-            transition: all 0.3s;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 15px;
         }
-
         .btn-submit {
-            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
-            color: #000000;
-            padding: 12px 24px;
-            border-radius: 14px;
-            font-weight: 700;
-            transition: all 0.3s;
-            flex: 1;
-            box-shadow: 0 8px 20px rgba(0, 242, 255, 0.15);
-        }
-
-        .btn-submit:active { transform: scale(0.96); opacity: 0.9; }
-
-        .close-btn {
-            position: absolute;
-            top: 24px;
-            right: 24px;
-            color: rgba(255, 255, 255, 0.3);
-            transition: color 0.3s;
-        }
-        .close-btn:active { color: #ffffff; }
-
-        /* Source Section Optimization */
-        .source-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s;
-        }
-        .source-card:active { background: rgba(255, 255, 255, 0.06); }
-
-        .source-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            background: rgba(0, 242, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--tg-cyan);
-            flex-shrink: 0;
+            background: #2563eb;
+            color: #ffffff;
+            font-weight: 500;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
-    <div class="app-container flex flex-col">
+    <div class="app-container" data-page="plugin-detail">
         <!-- 頂部導航 -->
-        <header class="safe-area-top px-5 py-4 flex items-center justify-between">
-            <button onclick="history.back()" class="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl active:scale-90 transition-transform">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 bg-[#010204]/80 backdrop-blur-md z-50">
+            <a href="plugin-home-mobile.html" class="header-action">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center active:scale-90 transition-transform">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.382-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+            </a>
+            <button class="header-action text-blue-400">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
             </button>
         </header>
 
-        <main class="flex-1 px-6 pb-10 overflow-y-auto no-scrollbar" data-page="plugin-detail">
-            <!-- 英雄區 -->
-            <section class="flex items-center gap-4 mb-8" data-section="plugin-hero">
-                <div class="w-20 h-20 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center">
-                    <svg class="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+        <main class="px-5 pt-4" data-section="plugin-info">
+            <!-- 插件頭部資訊 -->
+            <div class="flex items-start gap-4 mb-8">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
+                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/40">
+                        <path d="M4 4h16v16H4z"></path>
+                        <path d="M4 4l16 16M20 4L4 20"></path>
                     </svg>
                 </div>
-                <div>
-                    <h1 class="text-2xl font-bold text-white mb-1">Python代碼解釋器</h1>
-                    <p class="text-sm text-white/40">來源：阿里云百煉</p>
-                    <p class="text-sm text-white/40">創建時間：2025/01/12 16:22:22</p>
+                <div class="flex-1">
+                    <h1 class="text-xl font-bold text-white mb-2">Python代碼解釋器</h1>
+                    <div class="space-y-1">
+                        <div class="text-sm text-white/60">來源：<span class="text-blue-400 font-semibold">阿里云百煉</span></div>
+                        <div class="text-sm text-white/40">創建時間：2025/01/12 16:22:22</div>
+                    </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- 標籤組 -->
-            <section class="flex flex-wrap gap-2 mb-10" data-section="plugin-tags">
-                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70">城市燃氣</span>
-                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70">視頻工具</span>
-                <span class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg text-sm text-white/70">對話式交互</span>
-            </section>
+            <!-- 標籤 -->
+            <div class="flex flex-wrap gap-2 mb-8">
+                <span class="tag-pill">城市燃氣</span>
+                <span class="tag-pill">視頻工具</span>
+                <span class="tag-pill">對話式交互</span>
+            </div>
 
             <!-- 插件簡介 -->
-            <section class="mb-10" data-section="plugin-intro">
-                <div class="section-title">
-                    <div class="section-indicator indicator-blue"></div>
-                    插件簡介
-                </div>
-                <div class="desc-text space-y-4">
-                    <p>大模型，全稱大型語言模型（Large Language Model, LLM），其概念現已拓展至多模態領域，是人工智能領域的核心技術成果，指通過大規模參數與海量數據訓練結構而成的深度學習模型。</p>
-                    <p>憑藉強大的信息處理與智能生成能力，正深刻重構各行業的運行模式。這類模型通常具備數億至數千億級別的參數規模，訓練數據量可達TB級，涵蓋文本、圖像、音頻等多種數據類型，突破了傳統模型的能力邊界。</p>
+            <section class="mb-8">
+                <h2 class="section-title">插件簡介</h2>
+                <div class="text-sm text-white/70 leading-relaxed space-y-4">
+                    <p>大模型，全稱大型語言模型（Large Language Model，LLM），其概念現已拓展至多模態領域，是人工智能領域的核心技術成果，指通過大規模參數與海量數據訓練構建而成的深度學習模型，憑藉強大的信息處理與智能生成能力，正深刻重構各行業的運行模式。</p>
+                    <p>這類模型通常具備數億至數千億級別的參數規模，訓練數據量可達TB級，涵蓋文本、圖像、音頻等多種數據類型，突破了傳統模型的能力邊界。</p>
                 </div>
             </section>
 
             <!-- 參數名稱及說明 -->
-            <section class="mb-10" data-section="plugin-params">
-                <div class="section-title">
-                    <div class="section-indicator indicator-blue"></div>
-                    參數名稱及說明
-                </div>
-                <div class="space-y-1">
+            <section class="mb-8">
+                <h2 class="section-title">參數名稱及說明</h2>
+                <div class="content-card">
                     <div class="param-item">headerObject</div>
-                    <div class="param-item">request_idString</div>
-                    <div class="param-item">請求id</div>
+                    <div class="param-desc">request_idString 请求id</div>
+                    
                     <div class="param-item">payloadObject</div>
-                    <div class="param-item">inputString</div>
-                    <div class="param-item">待執行的代碼</div>
+                    <div class="param-desc">inputString 待执行的代码</div>
+                    
                     <div class="param-item">filesArray&lt;String&gt;</div>
-                    <div class="param-item">需要上傳的文件</div>
+                    <div class="param-desc">需要上传的文件</div>
                 </div>
             </section>
 
             <!-- 源地址 -->
-            <section class="mb-12" data-section="plugin-source">
-                <div class="section-title">
-                    <div class="section-indicator indicator-orange"></div>
-                    源地址
-                </div>
-                
-                <div class="source-card mb-4">
-                    <div class="source-icon">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.828a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="text-white/40 text-xs mb-1 uppercase tracking-wider font-bold">Official Source</div>
-                        <div class="text-white font-medium truncate">https://bailian.console.aliyun.com/...</div>
-                    </div>
-                    <button class="w-10 h-10 flex items-center justify-center bg-white/5 border border-white/10 rounded-xl text-white/40 active:text-cyan-400 active:border-cyan-400/30 transition-all">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2"></path>
+            <section class="mb-8">
+                <h2 class="section-title text-red-500 before:bg-red-500 before:shadow-red-500/50">源地址</h2>
+                <div class="flex items-center gap-3 mb-2">
+                    <a href="#" class="source-link text-lg">點擊馬上跳轉>></a>
+                    <button class="p-2 bg-white/5 rounded-lg active:bg-white/10">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
                     </button>
                 </div>
-
-                <a href="#" class="flex items-center justify-center gap-2 w-full py-4 bg-blue-500/10 border border-blue-500/20 rounded-2xl text-blue-400 font-bold active:scale-[0.98] transition-all">
-                    <span>點擊馬上跳轉</span>
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                    </svg>
-                </a>
-                
-                <p class="mt-4 text-xs text-white/30 text-center leading-relaxed">
-                    注：部分站點不支持手機端打開<br>
-                    建議 <button class="text-blue-400/60 underline decoration-blue-400/20">複製鏈接</button> 到電腦端瀏覽器訪問
+                <p class="text-xs text-white/40 leading-relaxed">
+                    (注：部分站點不支持手機端打開，請<span class="text-blue-400">複製鏈接</span>到電腦端打開查看)
                 </p>
             </section>
 
-            <!-- 反饋入口 -->
-            <section class="flex justify-end pb-8">
-                <button id="openFeedback" class="text-blue-400 font-bold text-sm active:opacity-70">有問題？ 點我反饋</button>
-            </section>
+            <!-- 反饋 -->
+            <div class="text-right mt-10">
+                <a href="javascript:void(0)" onclick="openFeedback()" class="text-blue-400 text-sm font-medium hover:underline">有問題？點我反饋</a>
+            </div>
         </main>
 
-        <!-- 意見反饋彈窗 (默認顯示，方便 Figma 導入，但在實機中可切換) -->
-        <div id="feedbackModal" class="modal-overlay">
-            <div class="modal-content" data-section="feedback-dialog">
-                <button id="closeFeedback" class="close-btn">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                </button>
-                
-                <h2 class="modal-title">意見反饋</h2>
-                
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center">
-                        <span class="form-label mb-0">聯繫人：</span>
-                        <span class="form-value">張三</span>
+        <!-- 意見反饋彈窗 -->
+        <div id="feedbackModal" class="modal-overlay" onclick="closeFeedback(event)">
+            <div class="feedback-modal" data-section="feedback-modal" onclick="event.stopPropagation()">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-8">
+                        <div class="flex-1"></div>
+                        <h2 class="text-xl font-bold text-slate-800">意見反饋</h2>
+                        <div class="flex-1 flex justify-end">
+                            <button onclick="closeFeedback()" class="text-slate-400 hover:text-slate-600">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        <span class="form-label mb-0">聯繫電話：</span>
-                        <span class="form-value">138XXXXXX</span>
+
+                    <div class="space-y-4">
+                        <div class="flex gap-2">
+                            <span class="feedback-label shrink-0">聯繫人：</span>
+                            <span class="feedback-value">張三</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="feedback-label shrink-0">聯繫電話：</span>
+                            <span class="feedback-value">138XXXXXX</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="feedback-label shrink-0">所屬企業：</span>
+                            <span class="feedback-value">XXXXXXX公司</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <span class="feedback-label shrink-0">反饋對象：</span>
+                            <span class="feedback-value text-indigo-600 font-medium">插件-Python代碼解釋器</span>
+                        </div>
+                        
+                        <div class="mt-6">
+                            <label class="feedback-label flex items-center gap-1">
+                                <span class="text-red-500 font-bold">*</span>反饋信息
+                            </label>
+                            <textarea class="feedback-textarea" placeholder="請輸入您的反饋內容..."></textarea>
+                        </div>
                     </div>
-                    <div class="flex items-center">
-                        <span class="form-label mb-0">所屬企業：</span>
-                        <span class="form-value">XXXXXXX公司</span>
+
+                    <div class="flex items-center justify-center gap-4 mt-8">
+                        <button onclick="closeFeedback()" class="btn-cancel active:opacity-70">取消</button>
+                        <button onclick="submitFeedback()" class="btn-submit active:opacity-90">提交</button>
                     </div>
-                    <div class="flex items-start">
-                        <span class="form-label mb-0">反饋對象：</span>
-                        <span class="form-value">插件-Python代碼解釋器</span>
-                    </div>
-                </div>
-                
-                <div class="mb-8">
-                    <label class="form-label">
-                        <span class="required-star">*</span>反饋信息
-                    </label>
-                    <textarea class="feedback-textarea" placeholder="請輸入您的反饋意見..."></textarea>
-                </div>
-                
-                <div class="flex gap-4">
-                    <button class="btn-cancel" id="cancelBtn">取消</button>
-                    <button class="btn-submit" id="submitBtn">提交</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        const modal = document.getElementById('feedbackModal');
-        const openBtn = document.getElementById('openFeedback');
-        const closeBtn = document.getElementById('closeFeedback');
-        const cancelBtn = document.getElementById('cancelBtn');
+        function openFeedback() {
+            document.getElementById('feedbackModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
 
-        openBtn.addEventListener('click', () => {
-            modal.style.display = 'flex';
-        });
+        function closeFeedback(e) {
+            if (e && e.target !== e.currentTarget && e.type === 'click') return;
+            document.getElementById('feedbackModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
 
-        const hideModal = () => {
-            modal.style.display = 'none';
-        };
-
-        closeBtn.addEventListener('click', hideModal);
-        cancelBtn.addEventListener('click', hideModal);
-
-        // 點擊遮罩層關閉
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) hideModal();
-        });
+        function submitFeedback() {
+            alert('反饋已提交，感謝您的配合！');
+            closeFeedback();
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Robot-TGAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #2d2d38;
+            /* 匹配你Figma深灰背景 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* 动画容器 */
+        .robot-wrapper {
+            position: relative;
+            width: 280px;
+            height: 360px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 机器人主体 —— 核心淡入上浮动画 */
+        .robot-body {
+            width: 200px;
+            height: auto;
+            position: absolute;
+            z-index: 2;
+            /* 初始状态：透明、缩小、下沉 */
+            opacity: 0;
+            transform: translateY(30px) scale(0.85);
+            /* 对应 Figma After delay + 动画 */
+            animation:
+                robotIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards,
+                robotIdle 2.8s ease-in-out infinite;
+            animation-delay: 0.4s, 1.2s;
+            /* 这里就是你的 After delay 延迟值，可改 */
+        }
+
+        /* 对话框气泡 —— 延迟弹出 */
+        .robot-bubble {
+            width: 120px;
+            height: auto;
+            position: absolute;
+            top: -20px;
+            left: -30px;
+            z-index: 3;
+            /* 初始隐藏 */
+            opacity: 0;
+            transform: scale(0.6) translateY(20px);
+            /* 比机器人晚出现，对应Figma序列动画 */
+            animation:
+                bubblePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+                bubbleFloat 3.2s ease-in-out infinite;
+            animation-delay: 0.9s, 1.6s;
+            /* 机器人出现后再延迟 */
+        }
+
+        /* 底部光效 */
+        .robot-light {
+            width: 100px;
+            height: 20px;
+            position: absolute;
+            bottom: -10px;
+            z-index: 1;
+            opacity: 0;
+            animation:
+                lightIn 0.4s ease forwards,
+                lightPulse 2.4s ease-in-out infinite;
+            animation-delay: 0.6s, 1.2s;
+        }
+
+        /* ======================================
+       关键帧动画 —— 1:1 还原Figma原型
+    ====================================== */
+        /* 机器人入场：淡入 + 上浮 + 缩放 */
+        @keyframes robotIn {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 气泡弹出：弹性弹出，更贴近Figma原型 */
+        @keyframes bubblePop {
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* 底部光淡入 */
+        @keyframes lightIn {
+            to {
+                opacity: 0.8;
+            }
+        }
+
+        /* 机器人轻微漂浮 + 呼吸感 */
+        @keyframes robotIdle {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-6px) scale(1.01);
+            }
+        }
+
+        /* 气泡小幅度上下浮动 */
+        @keyframes bubbleFloat {
+            0%,
+            100% {
+                transform: scale(1) translateY(0);
+            }
+            50% {
+                transform: scale(1.02) translateY(-4px);
+            }
+        }
+
+        /* 底部光轻微呼吸 */
+        @keyframes lightPulse {
+            0%,
+            100% {
+                opacity: 0.7;
+                transform: scaleX(1);
+            }
+            50% {
+                opacity: 0.95;
+                transform: scaleX(1.08);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .robot-body,
+            .robot-bubble,
+            .robot-light {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="robot-wrapper">
+        <!-- 底部光 -->
+        <img src="images/robot-light.svg" class="robot-light" alt="light">
+        <!-- 机器人本体 -->
+        <img src="images/robot-body.svg" class="robot-body" alt="robot">
+        <!-- 对话气泡 -->
+        <img src="images/robot-chat.svg" class="robot-bubble" alt="hello">
+    </div>
+</body>
+
+</html>
