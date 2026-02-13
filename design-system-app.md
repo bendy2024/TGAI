@@ -103,3 +103,15 @@
 - **高度**: `120px`。
 - **背景**: 漸變色背景 `linear-gradient`，疊加 `conic-gradient` 旋轉動畫。
 - **動畫**: 10s 線性無限旋轉。
+
+### M. 模型管理風格 (Model Management Style)
+- **主題色**: 以 Emerald (#00F5A0) 為主色調。
+- **背景**: `radial-gradient` 從頂部 `#064e3b` 向底部黑色過渡。
+- **模型卡片 (Model Card)**: 
+    - 背景: `linear-gradient(180deg, rgba(0, 245, 160, 0.05) 0%, rgba(15, 23, 42, 0.5) 100%)`。
+    - 邊框: `1px solid rgba(0, 245, 160, 0.15)`。
+- **操作按鈕**:
+    - **立即使用 (btn-action-emerald)**: `var(--tg-emerald)` 到 `var(--tg-cyan)` 的漸變，帶有翡翠綠發光陰影。
+    - **查看詳情 (btn-glass-blue)**: `rgba(0, 122, 255, 0.1)` 背景，藍色文字，強調信息屬性。
+- **分類標籤**: 激活態使用 `var(--tg-emerald)` 色彩與陰影。
+- **LOGO 佔位符**: 採用 `var(--tg-emerald)` 到 `var(--tg-cyan)` 的 135 度漸變。
