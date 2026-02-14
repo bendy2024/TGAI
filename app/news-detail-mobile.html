@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>快訊詳情 - TGAI Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-white: rgba(255, 255, 255, 0.1);
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-bg: #010204;
+        }
+
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            background-color: #010204;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+            overflow-x: hidden;
+        }
+
+        .safe-area-top { padding-top: calc(env(safe-area-inset-top) + 12px); }
+
+        .neu-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+        }
+
+        /* 文章內容樣式 */
+        .article-content {
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 15px;
+        }
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" data-page="news-detail">
+        <!-- 頂部導航 -->
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 z-50" data-section="header">
+            <a href="news-home-mobile.html" class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M15 18l-6-6 6-6"></path>
+                </svg>
+            </a>
+            <div class="flex-1 flex justify-center">
+                <span class="text-xs font-bold tracking-[0.2em] text-white/40 uppercase">資訊詳情</span>
+            </div>
+            <button class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M8.684 4.003H6.708l-.45 1.29c-.149.427-.337.826-.542 1.108l-.358.488c-.53.724-1.189 1.267-1.854 1.542l-.538.223v1.96l.538.222c.665.275 1.324.818 1.854 1.542l.358.488c.205.282.393.681.542 1.108l.45 1.29h1.976l.45-1.29c.149-.427.337-.826.542-1.108l.358-.488c.53-.724 1.189-1.267 1.854-1.542l.538-.223v-1.96l-.538-.222c-.665-.275-1.324-.818-1.854-1.542l-.358-.488a4.414 4.414 0 0 1-.542-1.108l-.45-1.29Z"></path>
+                    <path d="M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"></path>
+                    <path d="M19.347 11.231 21 12l-1.653.769c-.43.2-.82.443-1.102.72l-.482.474c-.71.698-1.242 1.564-1.511 2.439l-.219.709h-1.928l-.219-.71c-.269-.874-.801-1.74-1.511-2.438l-.482-.474c-.283-.277-.672-.52-1.102-.72L10.653 12l1.653-.769c.43-.2.82-.443 1.102-.72l.482-.474c.71-.698 1.242-1.564 1.511-2.439l.219-.709h1.928l.219.71c.269.874.801 1.74 1.511 2.438l.482.474c.283.277.672.52 1.102.72Z"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- 文章標題與元數據 -->
+        <section class="px-5 pt-4 pb-8" data-section="article-header">
+            <div class="neu-card p-6">
+                <h1 class="text-2xl font-bold text-white leading-tight mb-6">
+                    OpenAI發布ChatGPT新功能，專為健康打造的個人服務體驗
+                </h1>
+                
+                <div class="flex items-center justify-between text-[12px] tracking-wider uppercase text-white/40">
+                    <div class="flex items-center gap-4">
+                        <span class="flex items-center gap-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                            </svg>
+                            AIBase
+                        </span>
+                        <span class="flex items-center gap-1">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            2025/01/12
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 正文內容 -->
+        <main class="px-5 pb-20" data-section="article-body">
+            <div class="neu-card p-6">
+                <div class="article-content">
+                    <p>你的視頻推薦流，正在被AI“吞噬”。</p>
+                    <p>這不是危言聳聽，正經新調查發現：YouTube算法向新用戶展示的視頻中，有超過20%的內容是AI製造的低質量視頻。</p>
+                    <p>再扎心點說就是，我們平時在YouTube刷到的每5條視頻中，可能有1條就是AI隨手糊出來的。</p>
+                    <p>不僅如此，這樣沒啥營養的AI小視頻還在逐漸產業化，甚至被做成了一門越——滾——越——大的《生意》。</p>
+                    <p>好好好，這個世界到底還有什麼是真實的啊！！！</p>
+                    <p>當AI低質量視頻開始按“產量”出現，結論來自美國的一家創意軟件公司Kapwing。</p>
+                    <p>他們調查了全球15,000個最受歡迎的YouTube頻道，結果您猜怎麼著：</p>
+                    <p>其中278個頻道的內容幾乎全部由AI生成……（純·AI原創）。</p>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

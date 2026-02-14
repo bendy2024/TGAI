@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --border-white: rgba(255, 255, 255, 0.12);
+            --border-white: rgba(255, 255, 255, 0.08);
             --tg-cyan: #00F2FF;
             --tg-emerald: #00F5A0;
             --tg-bg: #010204;
@@ -19,7 +19,7 @@
 
         body {
             font-family: 'Noto Sans HK', sans-serif;
-            background: var(--tg-bg);
+            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
             color: #ffffff;
             -webkit-tap-highlight-color: transparent;
             display: flex;
@@ -30,7 +30,7 @@
             width: 100%;
             max-width: 440px;
             min-height: 100vh;
-            background-color: var(--tg-bg);
+            background-color: transparent;
             position: relative;
             display: flex;
             flex-direction: column;
@@ -40,9 +40,17 @@
 
         .safe-area-top { padding-top: env(safe-area-inset-top); }
 
+        .neu-card {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-white);
+            border-radius: var(--card-radius);
+        }
+
         .header-action {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,59 +58,52 @@
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-white);
             transition: all 0.2s;
+            color: #fff;
         }
         .header-action:active { transform: scale(0.9); background: rgba(255, 255, 255, 0.1); }
 
         .section-title {
-            font-size: 16px;
-            font-weight: 700;
+            font-size: 15px;
+            font-weight: 800;
             color: var(--tg-cyan);
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 16px;
+            letter-spacing: 0.05em;
         }
         .section-title::before {
             content: '';
-            width: 3px;
-            height: 16px;
+            width: 4px;
+            height: 4px;
             background: var(--tg-cyan);
-            border-radius: 2px;
-            box-shadow: 0 0 8px var(--tg-cyan);
-        }
-
-        .content-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-white);
-            border-radius: 20px;
-            padding: 16px;
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--tg-cyan), 0 0 20px var(--tg-cyan);
         }
 
         .param-item {
-            font-family: 'Courier New', Courier, monospace;
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            color: var(--tg-cyan);
+            font-size: 13px;
+            font-weight: 600;
             margin-bottom: 4px;
         }
         .param-desc {
             color: rgba(255, 255, 255, 0.4);
             font-size: 13px;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
+            line-height: 1.6;
         }
-
-        .source-link {
-            color: #3B82F6;
-            text-decoration: underline;
-            font-weight: 500;
-        }
+        .param-desc:last-child { margin-bottom: 0; }
 
         .tag-pill {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-white);
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 6px 14px;
+            border-radius: 12px;
             font-size: 13px;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 500;
         }
 
         /* 彈窗樣式 */
@@ -112,68 +113,73 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
             z-index: 1000;
             display: none;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .modal-overlay.active { display: flex; }
+        .modal-overlay.active { display: flex; opacity: 1; }
 
         .feedback-modal {
             width: 100%;
-            max-width: 360px;
-            background: #ffffff;
-            border-radius: 16px;
+            max-width: 380px;
+            background: #111827;
+            border: 1px solid var(--border-white);
+            border-radius: 24px;
             overflow: hidden;
-            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            color: #333;
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        @keyframes modalFadeIn {
-            from { opacity: 0; transform: scale(0.9) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
+        .modal-overlay.active .feedback-modal { transform: scale(1); }
 
         .feedback-label {
-            color: #1e293b;
-            font-size: 14px;
-            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 13px;
+            font-weight: 500;
         }
         .feedback-value {
-            color: #475569;
+            color: rgba(255, 255, 255, 0.9);
             font-size: 14px;
-            margin-bottom: 12px;
+            font-weight: 600;
         }
         .feedback-textarea {
             width: 100%;
-            height: 240px;
-            border: 1px solid #cbd5e1;
-            border-radius: 4px;
-            padding: 12px;
+            height: 160px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-white);
+            border-radius: 16px;
+            padding: 16px;
             font-size: 14px;
+            color: #fff;
             resize: none;
             outline: none;
             margin-top: 8px;
+            transition: all 0.3s ease;
         }
-        .feedback-textarea:focus { border-color: #2563eb; }
+        .feedback-textarea:focus { border-color: var(--tg-cyan); background: rgba(255, 255, 255, 0.05); }
 
         .btn-cancel {
-            background: #f1f5f9;
-            color: #0f172a;
-            font-weight: 500;
-            padding: 10px 24px;
-            border-radius: 8px;
+            height: 44px;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
+            color: #fff;
+            font-weight: 700;
+            border-radius: 12px;
             font-size: 15px;
         }
         .btn-submit {
-            background: #2563eb;
-            color: #ffffff;
-            font-weight: 500;
-            padding: 10px 24px;
-            border-radius: 8px;
+            height: 44px;
+            flex: 2;
+            background: linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%);
+            color: #000;
+            font-weight: 700;
+            border-radius: 12px;
             font-size: 15px;
         }
     </style>
@@ -181,136 +187,142 @@
 <body>
     <div class="app-container" data-page="plugin-detail">
         <!-- 頂部導航 -->
-        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 bg-[#010204]/80 backdrop-blur-md z-50">
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 z-50 bg-[#010204]/60 backdrop-blur-xl" data-section="header">
             <a href="plugin-home-mobile.html" class="header-action">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </a>
-            <button class="header-action text-blue-400">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <div class="flex-1 flex justify-center">
+                <span class="text-[10px] font-bold tracking-[0.2em] text-white/30 uppercase">插件詳情</span>
+            </div>
+            <button class="header-action text-white/40">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                 </svg>
             </button>
         </header>
 
-        <main class="px-5 pt-4" data-section="plugin-info">
+        <main class="px-5 pt-6 pb-12" data-section="plugin-info">
             <!-- 插件頭部資訊 -->
-            <div class="flex items-start gap-4 mb-8">
-                <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/40">
-                        <path d="M4 4h16v16H4z"></path>
-                        <path d="M4 4l16 16M20 4L4 20"></path>
-                    </svg>
-                </div>
-                <div class="flex-1">
-                    <h1 class="text-xl font-bold text-white mb-2">Python代碼解釋器</h1>
-                    <div class="space-y-1">
-                        <div class="text-sm text-white/60">來源：<span class="text-blue-400 font-semibold">阿里云百煉</span></div>
-                        <div class="text-sm text-white/40">創建時間：2025/01/12 16:22:22</div>
+            <div class="neu-card p-6 mb-6">
+                <div class="flex items-start gap-5">
+                    <div class="w-20 h-20 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-center shrink-0">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" class="text-white/20">
+                            <path d="M4 4h16v16H4z"></path>
+                            <path d="M4 4l16 16M20 4L4 20"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h1 class="text-xl font-black text-white mb-2 truncate">Python代碼解釋器</h1>
+                        <div class="space-y-1.5">
+                            <div class="text-[13px] text-white/40">來源：<span class="text-cyan-500 font-bold uppercase tracking-wider">ALIYUN</span></div>
+                            <div class="text-[11px] text-white/20 font-medium">創建時間：2025/01/12 16:22:22</div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 標籤 -->
-            <div class="flex flex-wrap gap-2 mb-8">
-                <span class="tag-pill">城市燃氣</span>
-                <span class="tag-pill">視頻工具</span>
-                <span class="tag-pill">對話式交互</span>
+                <!-- 標籤 -->
+                <div class="flex flex-wrap gap-2 mt-6">
+                    <span class="tag-pill">城市燃氣</span>
+                    <span class="tag-pill">視頻工具</span>
+                    <span class="tag-pill">對話式交互</span>
+                </div>
             </div>
 
             <!-- 插件簡介 -->
             <section class="mb-8">
                 <h2 class="section-title">插件簡介</h2>
-                <div class="text-sm text-white/70 leading-relaxed space-y-4">
-                    <p>大模型，全稱大型語言模型（Large Language Model，LLM），其概念現已拓展至多模態領域，是人工智能領域的核心技術成果，指通過大規模參數與海量數據訓練構建而成的深度學習模型，憑藉強大的信息處理與智能生成能力，正深刻重構各行業的運行模式。</p>
-                    <p>這類模型通常具備數億至數千億級別的參數規模，訓練數據量可達TB級，涵蓋文本、圖像、音頻等多種數據類型，突破了傳統模型的能力邊界。</p>
+                <div class="neu-card p-6">
+                    <div class="text-[14px] text-white/40 leading-relaxed space-y-4">
+                        <p>大模型，全稱大型語言模型（Large Language Model，LLM），其概念現已拓展至多模態領域，是人工智能領域的核心技術成果，指通過大規模參數與海量數據訓練構建而成的深度學習模型，憑藉強大的信息處理與智能生成能力，正深刻重構各行業的運行模式。</p>
+                        <p>這類模型通常具備數億至數千億級別的參數規模，訓練數據量可達TB級，涵蓋文本、圖像、音頻等多種數據類型，突破了傳統模型的能力邊界。</p>
+                    </div>
                 </div>
             </section>
 
             <!-- 參數名稱及說明 -->
             <section class="mb-8">
                 <h2 class="section-title">參數名稱及說明</h2>
-                <div class="content-card">
-                    <div class="param-item">headerObject</div>
-                    <div class="param-desc">request_idString 请求id</div>
+                <div class="neu-card p-6">
+                    <div class="param-item">header <span class="text-white/20 font-normal">Object</span></div>
+                    <div class="param-desc">request_id <span class="text-white/20">String</span> 请求 id</div>
                     
-                    <div class="param-item">payloadObject</div>
-                    <div class="param-desc">inputString 待执行的代码</div>
+                    <div class="param-item">payload <span class="text-white/20 font-normal">Object</span></div>
+                    <div class="param-desc">input <span class="text-white/20">String</span> 待执行的代码</div>
                     
-                    <div class="param-item">filesArray&lt;String&gt;</div>
-                    <div class="param-desc">需要上传的文件</div>
+                    <div class="param-item">files <span class="text-white/20 font-normal">Array&lt;String&gt;</span></div>
+                    <div class="param-desc">需要上传的文件路径列表</div>
                 </div>
             </section>
 
             <!-- 源地址 -->
-            <section class="mb-8">
-                <h2 class="section-title text-red-500 before:bg-red-500 before:shadow-red-500/50">源地址</h2>
-                <div class="flex items-center gap-3 mb-2">
-                    <a href="#" class="source-link text-lg">點擊馬上跳轉>></a>
-                    <button class="p-2 bg-white/5 rounded-lg active:bg-white/10">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/60">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-                        </svg>
-                    </button>
+            <section class="mb-10">
+                <h2 class="section-title">源地址</h2>
+                <div class="neu-card p-6">
+                    <div class="flex items-center justify-between gap-4">
+                        <a href="#" class="text-cyan-500 font-bold text-[15px] underline underline-offset-4 decoration-cyan-500/30">點擊馬上跳轉 >></a>
+                        <button class="w-10 h-10 flex items-center justify-center bg-white/5 rounded-xl active:bg-white/10 border border-white/5">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-white/40">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-[12px] text-white/20 mt-4 leading-relaxed">
+                        注：部分站點不支持手機端打開，請<span class="text-cyan-500 mx-1">複製鏈接</span>到電腦端查看。
+                    </p>
                 </div>
-                <p class="text-xs text-white/40 leading-relaxed">
-                    (注：部分站點不支持手機端打開，請<span class="text-blue-400">複製鏈接</span>到電腦端打開查看)
-                </p>
             </section>
 
             <!-- 反饋 -->
-            <div class="text-right mt-10">
-                <a href="javascript:void(0)" onclick="openFeedback()" class="text-blue-400 text-sm font-medium hover:underline">有問題？點我反饋</a>
+            <div class="text-center">
+                <button onclick="openFeedback()" class="text-white/30 text-[13px] font-bold border-b border-white/10 pb-1">有問題？點我反饋</button>
             </div>
         </main>
 
         <!-- 意見反饋彈窗 -->
         <div id="feedbackModal" class="modal-overlay" onclick="closeFeedback(event)">
             <div class="feedback-modal" data-section="feedback-modal" onclick="event.stopPropagation()">
-                <div class="p-6">
+                <div class="p-8">
                     <div class="flex items-center justify-between mb-8">
-                        <div class="flex-1"></div>
-                        <h2 class="text-xl font-bold text-slate-800">意見反饋</h2>
-                        <div class="flex-1 flex justify-end">
-                            <button onclick="closeFeedback()" class="text-slate-400 hover:text-slate-600">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M18 6L6 18M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
+                        <h2 class="text-xl font-black text-white tracking-wider">意見反饋</h2>
+                        <button onclick="closeFeedback()" class="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-white/20">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                                <path d="M18 6L6 18M6 6l12 12"></path>
+                            </svg>
+                        </button>
                     </div>
 
                     <div class="space-y-4">
-                        <div class="flex gap-2">
-                            <span class="feedback-label shrink-0">聯繫人：</span>
+                        <div class="flex justify-between items-center py-3 border-b border-white/5">
+                            <span class="feedback-label">聯繫人</span>
                             <span class="feedback-value">張三</span>
                         </div>
-                        <div class="flex gap-2">
-                            <span class="feedback-label shrink-0">聯繫電話：</span>
+                        <div class="flex justify-between items-center py-3 border-b border-white/5">
+                            <span class="feedback-label">聯繫電話</span>
                             <span class="feedback-value">138XXXXXX</span>
                         </div>
-                        <div class="flex gap-2">
-                            <span class="feedback-label shrink-0">所屬企業：</span>
+                        <div class="flex justify-between items-center py-3 border-b border-white/5">
+                            <span class="feedback-label">所屬企業</span>
                             <span class="feedback-value">XXXXXXX公司</span>
                         </div>
-                        <div class="flex gap-2">
-                            <span class="feedback-label shrink-0">反饋對象：</span>
-                            <span class="feedback-value text-indigo-600 font-medium">插件-Python代碼解釋器</span>
+                        <div class="flex flex-col gap-2 py-3">
+                            <span class="feedback-label">反饋對象</span>
+                            <span class="text-cyan-500 font-bold text-sm">插件 - Python代碼解釋器</span>
                         </div>
                         
-                        <div class="mt-6">
-                            <label class="feedback-label flex items-center gap-1">
-                                <span class="text-red-500 font-bold">*</span>反饋信息
+                        <div class="pt-2">
+                            <label class="feedback-label flex items-center gap-1 mb-2">
+                                反饋信息 <span class="text-cyan-500 font-bold">*</span>
                             </label>
-                            <textarea class="feedback-textarea" placeholder="請輸入您的反饋內容..."></textarea>
+                            <textarea class="feedback-textarea" placeholder="請詳細描述您遇到的問題..."></textarea>
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-center gap-4 mt-8">
+                    <div class="flex gap-3 mt-8">
                         <button onclick="closeFeedback()" class="btn-cancel active:opacity-70">取消</button>
-                        <button onclick="submitFeedback()" class="btn-submit active:opacity-90">提交</button>
+                        <button onclick="submitFeedback()" class="btn-submit active:opacity-90">提交反饋</button>
                     </div>
                 </div>
             </div>

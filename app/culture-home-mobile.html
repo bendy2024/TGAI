@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AI 文化 - TGAI Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-white: rgba(255, 255, 255, 0.1);
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-bg: #010204;
+        }
+
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: radial-gradient(circle at 50% 0%, rgba(15, 23, 42, 0.4) 0%, #111827 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            background-color: #111827;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+            overflow-x: hidden;
+            padding-bottom: 90px;
+        }
+
+        .safe-area-top { padding-top: env(safe-area-inset-top); }
+
+        /* 玻璃擬態卡片 */
+        .neu-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+        }
+
+        /* Banner 樣式 */
+        .banner-card {
+            position: relative;
+            height: 160px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1px solid var(--border-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .banner-card::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, var(--tg-cyan), transparent, var(--tg-emerald), transparent);
+            animation: rotate 10s linear infinite;
+            opacity: 0.15;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 分類標籤樣式 */
+        .category-tab {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 20px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 14px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .category-tab.active {
+            color: var(--tg-cyan);
+        }
+        .category-tab.active .tab-indicator {
+            width: 24px;
+            height: 3px;
+            background: var(--tg-cyan);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--tg-cyan);
+        }
+
+        /* 內容卡片樣式 */
+        .content-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        .content-card:active {
+            transform: scale(0.98);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* 底部導航欄 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 400px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            color: var(--tg-cyan);
+        }
+        .nav-label { font-weight: 500; }
+    </style>
+</head>
+<body>
+    <div class="app-container" data-page="culture-home">
+        <!-- 頂部導航 -->
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 z-50 bg-[#111827]/80 backdrop-blur-md" data-section="header">
+            <div class="flex items-center gap-3">
+                <a href="model-home-mobile.html" class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 shrink-0">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"></path>
+                    </svg>
+                </a>
+            </div>
+            
+            <div class="flex-1 mx-4">
+                <div class="relative">
+                    <input type="text" placeholder="搜索內容..." class="w-full h-11 bg-white/5 border border-white/5 rounded-full px-4 pl-10 text-[15px] text-white/80 focus:outline-none focus:border-cyan-500/50">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <a href="user-center-mobile.html" class="relative w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 overflow-hidden">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <div class="absolute top-3 right-3 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#111827]"></div>
+            </a>
+        </header>
+
+        <!-- Banner -->
+        <section class="px-5 py-4" data-section="banner">
+            <div class="banner-card">
+                <div class="relative z-10 text-center">
+                    <h2 class="text-xl font-black text-white tracking-widest uppercase">AI CULTURE</h2>
+                    <div class="mt-2 h-[2px] w-12 bg-gradient-to-r from-transparent via-cyan-500 to-transparent mx-auto"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 分類標籤 -->
+        <div class="overflow-x-auto no-scrollbar" data-section="categories">
+            <nav class="px-5 flex border-b border-white/5">
+                <button class="category-tab active">
+                    <span class="font-bold">最佳實踐</span>
+                    <div class="tab-indicator mt-2"></div>
+                </button>
+                <button class="category-tab">
+                    <span>AI賽事</span>
+                    <div class="tab-indicator mt-2 opacity-0"></div>
+                </button>
+                <button class="category-tab">
+                    <span>培訓課程</span>
+                    <div class="tab-indicator mt-2 opacity-0"></div>
+                </button>
+            </nav>
+        </div>
+
+        <!-- 內容卡片列表 -->
+        <main class="px-5 py-6 space-y-4" data-section="content-list">
+            <!-- 卡片 1 -->
+            <a href="culture-detail-mobile.html" class="block content-card">
+                <div class="card-image">
+                    <svg class="w-12 h-12 text-white/5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-[17px] font-bold text-white/90 leading-snug mb-3">科技賦能創新，XX 企業 AI 實踐開啟高質量發展新征程</h3>
+                    <div class="flex items-center gap-3">
+                        <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-500 text-[10px] font-bold uppercase tracking-wider">最佳實踐</span>
+                        <span class="text-[12px] text-white/20">2025/01/12</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 卡片 2 -->
+            <a href="culture-detail-mobile.html" class="block content-card">
+                <div class="card-image">
+                    <svg class="w-12 h-12 text-white/5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="p-5">
+                    <h3 class="text-[17px] font-bold text-white/90 leading-snug mb-3">2025 全球 AI 創新大賽：探索智能未來的新邊界</h3>
+                    <div class="flex items-center gap-3">
+                        <span class="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 text-[10px] font-bold uppercase tracking-wider">AI 賽事</span>
+                        <span class="text-[12px] text-white/20">2025/01/10</span>
+                    </div>
+                </div>
+            </a>
+        </main>
+
+        <!-- 底部導航欄 -->
+        <nav class="bottom-nav" data-section="bottom-nav">
+            <a href="agent-home-mobile.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+                <span class="nav-label">Agent</span>
+            </a>
+            <a href="plugin-home-mobile.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                <span class="nav-label">插件</span>
+            </a>
+            <a href="model-home-mobile.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                    <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                    <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                </svg>
+                <span class="nav-label">模型</span>
+            </a>
+            <a href="news-home-mobile.html" class="nav-item">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span class="nav-label">快訊</span>
+            </a>
+            <a href="culture-home-mobile.html" class="nav-item active">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span class="nav-label">文化</span>
+            </a>
+        </nav>
+    </div>
+</body>
+</html>
+    </div>
+</body>
+</html>

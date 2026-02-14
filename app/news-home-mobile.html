@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AI 快訊 - TGAI Mobile</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --border-white: rgba(255, 255, 255, 0.1);
+            --tg-cyan: #00F2FF;
+            --tg-emerald: #00F5A0;
+            --tg-bg: #010204;
+            --card-radius: 24px;
+            --nav-height: 72px;
+        }
+
+        body {
+            font-family: 'Noto Sans HK', sans-serif;
+            background: radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%);
+            color: #ffffff;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            min-height: 100vh;
+            background-color: #010204;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8);
+            overflow-x: hidden;
+            padding-bottom: 120px;
+        }
+
+        .safe-area-top { padding-top: calc(env(safe-area-inset-top) + 12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 統一卡片樣式 */
+        .neu-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: var(--card-radius);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .neu-card:active {
+            transform: scale(0.98);
+            border-color: var(--tg-cyan);
+        }
+
+        /* 頂部搜索欄 */
+        .search-bar {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            flex: 1;
+            margin: 0 12px;
+        }
+
+        .logo-placeholder {
+            padding: 0 8px;
+            height: 32px;
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 700;
+            color: rgba(255,255,255,0.6);
+            letter-spacing: 0.05em;
+        }
+
+        /* 分類選項卡 */
+        .category-tab {
+            white-space: nowrap;
+            padding: 0 16px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .category-tab.active {
+            color: var(--tg-cyan);
+            font-weight: 700;
+        }
+        .category-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 16px;
+            right: 16px;
+            height: 2px;
+            background: var(--tg-cyan);
+            box-shadow: 0 0 10px var(--tg-cyan);
+        }
+
+        /* 底部導航 */
+        .nav-wrapper {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 400px;
+            z-index: 100;
+        }
+        .main-nav {
+            height: var(--nav-height);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+        .nav-item.active { color: var(--tg-cyan); }
+        .nav-label { font-size: 11px; }
+
+        /* Banner 樣式 */
+        .banner-card {
+            height: 120px;
+            background: rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+        }
+        .banner-card::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: conic-gradient(from 0deg, transparent, var(--tg-cyan), transparent, var(--tg-emerald), transparent);
+            animation: rotate 10s linear infinite;
+            opacity: 0.15;
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* 新聞列表項 */
+        .news-item {
+            padding: 16px;
+            display: flex;
+            gap: 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.3s ease;
+        }
+        .news-item:active { background: rgba(255, 255, 255, 0.03); }
+        .news-thumb {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container" data-page="news-home">
+        <!-- 頂部導航 -->
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 z-50" data-section="header">
+            <a href="index.html" class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10 shrink-0">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </a>
+            <div class="search-bar">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" class="mr-2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="搜索 資訊" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/40">
+            </div>
+            <a href="user-center-mobile.html" class="relative w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-tr from-cyan-500 to-emerald-500 p-[2px] shrink-0">
+                <div class="w-full h-full rounded-full bg-gray-900 flex items-center justify-center overflow-hidden">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="absolute top-0 right-0 w-3 h-3 bg-cyan-500 border-2 border-[#010204] rounded-full shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
+            </a>
+        </header>
+
+        <!-- Banner 區域 -->
+        <section class="px-5 mb-6" data-section="banner">
+            <div class="banner-card neu-card">
+                <div class="relative z-10 text-center">
+                    <h2 class="text-xs font-bold tracking-[0.2em] text-white/40 uppercase mb-2">Global AI News Hub</h2>
+                    <p class="text-2xl font-black tracking-widest text-white/90">AI 資訊中心</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 統計數據 -->
+        <section class="px-5 mb-4 flex items-center gap-6 text-[12px] tracking-wider uppercase text-white/40" data-section="stats">
+            <div>今日更新 <span class="text-cyan-400 font-bold ml-1">102</span></div>
+            <div>總資訊 <span class="text-white ml-1">2902</span></div>
+        </section>
+
+        <!-- 分類標籤 -->
+        <section class="mb-4" data-section="categories">
+            <div class="flex items-center">
+                <div class="flex overflow-x-auto no-scrollbar gap-2 flex-1 px-5">
+                    <button class="category-tab active">全部</button>
+                    <button class="category-tab">技術前沿</button>
+                    <button class="category-tab">產業動態</button>
+                    <button class="category-tab">技術領域</button>
+                    <button class="category-tab">學習教育</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 新聞列表 -->
+        <main class="flex flex-col gap-4 px-5" data-section="news-list">
+            <!-- 新聞項 1 -->
+            <a href="news-detail-mobile.html" class="neu-card flex items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <h3 class="text-[15px] font-bold text-white/90 leading-snug line-clamp-2">OpenAI發布ChatGPT新功能，專為健康領域優化醫療數據分析能力</h3>
+                    <div class="flex items-center justify-between text-[11px] text-white/30 mt-2">
+                        <div class="flex items-center gap-3">
+                            <span>剛剛</span>
+                            <span>大模型競技場</span>
+                        </div>
+                        <span>23 瀏覽</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 新聞項 2 -->
+            <a href="news-detail-mobile.html" class="neu-card flex items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <h3 class="text-[15px] font-bold text-white/90 leading-snug line-clamp-2">OpenAI發布ChatGPT新功能，專為健康領域優化醫療數據分析能力</h3>
+                    <div class="flex items-center justify-between text-[11px] text-white/30 mt-2">
+                        <div class="flex items-center gap-3">
+                            <span>2025/01/12</span>
+                            <span>大模型競技場</span>
+                        </div>
+                        <span>23 瀏覽</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 新聞項 3 -->
+            <a href="news-detail-mobile.html" class="neu-card flex items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <h3 class="text-[15px] font-bold text-white/90 leading-snug line-clamp-2">OpenAI發布ChatGPT新功能，專為健康領域優化醫療數據分析能力</h3>
+                    <div class="flex items-center justify-between text-[11px] text-white/30 mt-2">
+                        <div class="flex items-center gap-3">
+                            <span>2025/01/12</span>
+                            <span>大模型競技場</span>
+                        </div>
+                        <span>23 瀏覽</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 新聞項 4 -->
+            <a href="news-detail-mobile.html" class="neu-card flex items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <h3 class="text-[15px] font-bold text-white/90 leading-snug line-clamp-2">OpenAI發布ChatGPT新功能，專為健康領域優化醫療數據分析能力</h3>
+                    <div class="flex items-center justify-between text-[11px] text-white/30 mt-2">
+                        <div class="flex items-center gap-3">
+                            <span>2025/01/12</span>
+                            <span>大模型競技場</span>
+                        </div>
+                        <span>23 瀏覽</span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- 新聞項 5 -->
+            <a href="news-detail-mobile.html" class="neu-card flex items-center gap-4 p-4">
+                <div class="w-20 h-20 rounded-2xl bg-white/5 flex items-center justify-center shrink-0">
+                    <svg class="w-8 h-8 text-white/20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h14a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0 flex flex-col justify-between py-1">
+                    <h3 class="text-[15px] font-bold text-white/90 leading-snug line-clamp-2">OpenAI發布ChatGPT新功能，專為健康領域優化醫療數據分析能力</h3>
+                    <div class="flex items-center justify-between text-[11px] text-white/30 mt-2">
+                        <div class="flex items-center gap-3">
+                            <span>2025/01/12</span>
+                            <span>大模型競技場</span>
+                        </div>
+                        <span>23 瀏覽</span>
+                    </div>
+                </div>
+            </a>
+        </main>
+
+        <!-- 底部導航 -->
+        <div class="nav-wrapper">
+            <nav class="main-nav">
+                <a href="agent-home-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                        <path d="M2 17l10 5 10-5"></path>
+                        <path d="M2 12l10 5 10-5"></path>
+                    </svg>
+                    <span class="nav-label">Agent</span>
+                </a>
+                <a href="plugin-home-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                    </svg>
+                    <span class="nav-label">插件</span>
+                </a>
+                <a href="model-home-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span class="nav-label">模型</span>
+                </a>
+                <a href="#" class="nav-item active">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 20l-7-7 7-7"></path>
+                        <path d="M12 20l-7-7 7-7"></path>
+                    </svg>
+                    <span class="nav-label">快訊</span>
+                </a>
+                <a href="culture-home-mobile.html" class="nav-item">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="9" y1="3" x2="9" y2="21"></line>
+                    </svg>
+                    <span class="nav-label">文化</span>
+                </a>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,117 +1,82 @@
 # TGAI App 端設計系統規範 (Mobile Design System)
 
-> 版本 2.0 | 專為移動端觸控體驗優化，風格全面對齊 PC 端商務美學
+> 版本 2.1 | 專為移動端觸控體驗優化，核心設計語言對齊 `agent-home-mobile.html`
 
 ## 1. 核心設計令牌 (Shared Tokens)
-*繼承自 PC 端設計系統，保持跨平台視覺一致性。*
+*繼承自 PC 端設計系統，確保跨平台視覺一致性。*
 
-- **品牌色**: 與 PC 端一致 (Cyan #00F2FF, Emerald #00F5A0)
-- **背景色**: 採用純深色 `#010204`，提升專業感並優化 OLED 顯示。
-- **邊框色**: 統一使用 `var(--border-white)` 即 `rgba(255, 255, 255, 0.12)`，追求極簡邊界感。
-- **磨砂玻璃**: `backdrop-filter: blur(12px)`，配合 `rgba(15, 23, 42, 0.6)` 背景。
-- **圓角規範**: 統一採用 `24px` (Card Radius)，與 PC 端 neu-card 保持一致。
+- **品牌色 (Brand Colors)**: 
+  - **Cyan**: `#00F2FF` (`var(--tg-cyan)`) - 用於主要激活態、文字高亮。
+  - **Emerald**: `#00F5A0` (`var(--tg-emerald)`) - 用於成功狀態、模型管理主題。
+  - **Action Gradient**: `linear-gradient(135deg, var(--tg-cyan) 0%, var(--tg-emerald) 100%)`
+- **背景與材質 (Surface & Material)**: 
+  - **背景色**: 純深色 `#010204` (`var(--tg-bg)`)，搭配頂部徑向漸變 `radial-gradient(circle at 50% 0%, #111827 0%, #010204 100%)`。
+  - **邊框色**: 統一使用 `rgba(255, 255, 255, 0.1)` (`var(--border-white)`)。
+  - **磨砂玻璃 (Glassmorphism)**: 
+    - **基礎卡片**: `backdrop-filter: blur(20px)`，背景 `rgba(15, 23, 42, 0.5)`。
+    - **交互組件 (按鈕/搜索框)**: `backdrop-filter: blur(10px)`，背景 `rgba(255, 255, 255, 0.05)`。
+- **圓角規範 (Radii)**: 
+  - **大圓角 (Card)**: `24px` (`var(--card-radius)`)。
+  - **中圓角 (Modal)**: `32px`。
+  - **小圓角 (Button/Input)**: `12px`。
+- **導航高度 (Navigation)**: `72px` (`var(--nav-height)`)。
 
 ## 2. 移動端字體規範 (Typography)
-- **基礎字體**: `Noto Sans HK`，移除所有後備字體，確保香港本地市場的視覺純粹性。
-- **字體階梯**: 
-  - 大標題: `20px` (Bold)
-  - 中標題 (Card Title): `16px` (Semi-Bold)
-  - 標準正文: `16px` (Regular)
-  - 次要正文 (輔助文字): `14px` (Medium/Bold)
-- **行高設定**: 1.4 - 1.6 倍，確保中文閱讀舒適度。
+- **基礎字體**: `Noto Sans HK` (Weights: 300, 400, 500, 700, 900)。
+- **字體階梯 (Text Scale)**: 
+  - **Banner 標題**: `20px` (text-xl) / `font-black` / `tracking-widest` / `text-white/90`
+  - **卡片標題**: `18px` (text-lg) / `font-bold` / `text-white`
+  - **分類/導航標籤**: `15px` / `font-medium` (Active: `font-bold` / `text-tg-cyan`)
+  - **標準正文**: `14px` (text-sm) / `leading-relaxed` / `text-white/60`
+  - **輔助文字 (Badge/Meta)**: `12px` (text-xs) / `text-white/40`
+  - **導航標籤 (Bottom Nav)**: `11px` / `text-white/40`
 
-## 3. 佈局與間距 (Layout & Spacing)
-- **設計基準**: 以 **iPhone 16 Pro Max** (440px 邏輯寬度) 為基準。
-- **容器寬度**: 最大限制為 `440px` 並居中，模擬原生 App 封閉感。
-- **邊距 (Gutter)**: 標準 `20px` (px-5)，重要區塊間距為 `mt-10`。
-- **安全區域**: 強制適配 `viewport-fit=cover` 與 `env(safe-area-inset-*)`。
+## 3. 核心組件規範 (Core Components)
 
-## 4. 核心組件規範 (App Components)
+### A. 按鈕系統 (Buttons)
+*所有按鈕高度統一為 `44px`，以符合觸控熱區規範。*
 
-### A. 底部導航欄 (Floating Tab Bar)
-- **風格**: 懸浮式 `neu-card` 設計，非貼底，保留側邊間距。
-- **結構**: 5 欄位 (首頁、超市、插件、知識庫、更多)。
-- **交互**: 「更多」按鈕觸發底部彈出菜單 (Popover Menu)。
-- **動畫**: 菜單彈出使用 `cubic-bezier(0.4, 0, 0.2, 1)` 平滑過渡。
+- **主要操作 (btn-action)**:
+  - **樣式**: 品牌漸變背景，黑色文字 (`#000`)，`font-bold`。
+  - **反饋**: `active:scale-95` / `active:opacity-90`。
+- **次要操作 (btn-glass)**:
+  - **樣式**: `rgba(255, 255, 255, 0.05)` 背景，白色文字，`font-semibold`，帶有 `blur(10px)`。
+  - **反饋**: `active:background(rgba(255, 255, 255, 0.1))` / `active:scale-95`。
+- **佈局**: 卡片內底部按鈕統一採用 **2 欄網格** `grid grid-cols-2 gap-3`。
 
-### B. 統一按鈕風格 (Buttons)
-- **主要按鈕 (btn-action)**: 漸變色背景，黑色文字，帶有品牌發光陰影。
-- **次要按鈕 (btn-glass)**: 磨砂玻璃質感，白色文字，輕量級視覺。
-- **最小觸控目標**: 確保所有按鈕高度至少為 `44px`。
+### B. 卡片系統 (Neu-Card)
+- **視覺規範**: `neu-card` 類名，具備磨砂玻璃感、`1px` 邊框與 `24px` 圓角。
+- **活性狀態**: `active:scale-98`，邊框顏色變為 `var(--tg-cyan)`。
+- **Banner 特化**: 高度 `120px`，內置 `conic-gradient` 旋轉動畫，透明度 `0.1`。
 
-### C. 內容卡片 (Neu-Card)
-- **背景**: `rgba(15, 23, 42, 0.6)`
-- **邊框**: `1px solid rgba(255, 255, 255, 0.12)`
-- **陰影**: 輕微內陰影提升層次感。
+### C. 導航組件 (Navigation)
+- **分類選項卡 (Category Tabs)**:
+  - 高度 `44px`，左側橫向滾動 (`no-scrollbar`)，右側固定 **「篩選」** 按鈕。
+  - 篩選按鈕需帶有 `border-l border-white/10` 與 `ml-4 pl-4` 的視覺分隔。
+  - 激活態下方有 `2px` 品牌色指示線與 `10px` 擴散陰影。
+- **底部導航 (Bottom Nav)**:
+  - 懸浮式設計，`nav-wrapper` 距離底部 `24px`。
+  - 背景 `rgba(15, 23, 42, 0.8)`，`blur(25px)`，圓角 `36px`。
 
-### D. 意見反饋彈窗 (Feedback Modal)
-- **背景**: `rgba(15, 23, 42, 0.85)` 磨砂玻璃背景，模糊度 `25px`。
-- **邊框**: `1px solid rgba(255, 255, 255, 0.12)`。
-- **圓角**: `32px`。
-- **標題**: 採用品牌漸變色 (Cyan to Emerald)。
-- **輸入框**: `rgba(255, 255, 255, 0.03)` 背景，圓角 `16px`，聚焦時邊框發光。
+### D. 狀態標籤 (Status Badges)
+- **位置**: 卡片右上角 `absolute` 定位。
+- **樣式**: 漸變背景，白色文字，`12px` `font-bold`，圓角 `0 0 0 12px`。
+- **預設配色**:
+  - **本地 (Local)**: `linear-gradient(135deg, #10B981 0%, #059669 100%)`
+  - **飛書 (Lark)**: `linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)`
 
-### E. 資源/源地址卡片 (Source Card)
-- **佈局**: 左側圖標 + 中間路徑信息 + 右側操作按鈕 (如複製)。
-- **背景**: `rgba(255, 255, 255, 0.03)`，圓角 `20px`。
-- **引導按鈕**: 採用 `10%` 透明度藍色背景，增強跳轉點擊感。
+### E. 篩選彈窗 (Filter Modal)
+- **背景**: `rgba(0, 0, 0, 0.7)` 遮罩 + `blur(12px)`。
+- **面板**: `rgba(15, 23, 42, 0.9)` 背景，`blur(40px)`，圓角 `32px`。
+- **佈局**: `grid-template-cols: 80px 1fr` (標籤 vs 選項)。
+- **選項**: 默認 `text-white/80`，激活 `text-tg-cyan` + `font-bold`。
 
-### F. 狀態標籤 (Status Badges)
-- **位置**: 通常位於卡片右上角，採用 `absolute` 定位。
-- **樣式**: 漸變背景，白色文字，圓角 `0 0 0 12px` (僅左下圓角)。
-- **配色**: 
-    - 本地 (Local): Emerald 綠色漸變。
-    - 飛書 (Lark): Blue 藍色漸變。
-    - 外部 (External): Orange 橙色漸變。
+## 4. 佈局與間距規範 (Layout & Spacing)
+- **容器限制**: `max-width: 440px` 居中，模擬原生 App。
+- **標準邊距**: 左右 `20px` (`px-5`)，區塊間距 `mb-6` 或 `space-y-5`。
+- **頂部安全區**: `safe-area-top` (適配動態島/瀏海)。
 
-### G. 分類選項卡 (Category Tabs)
-- **交互**: 支持橫向滑動 (`overflow-x-auto`)，隱藏滾動條。
-- **激活態**: 文字顏色變為品牌色 (Cyan)，下方輔以帶發光效果的指示線。
-- **字體**: `15px` Medium。
-
-### H. 篩選彈窗 (Filter Modal)
-- **佈局**: 採用左側標籤 (Label) + 右側多選區 (Options) 的網格佈局。
-- **背景**: `rgba(15, 23, 42, 0.9)` 磨砂玻璃，模糊度 `40px`。
-- **篩選選項**: 
-    - 默認文字顏色 `rgba(255, 255, 255, 0.8)`。
-    - 激活態文字顏色為品牌色 (Cyan)，加粗處理。
-- **已選標籤 (Selected Tags)**: 
-    - 背景 `rgba(0, 242, 255, 0.1)`，邊框 `rgba(0, 242, 255, 0.2)`。
-    - 包含刪除圖標，點擊可快速移除篩選條件。
-
-## 5. 交互模式 (App Patterns)
-- **狀態反饋**: 點擊時使用 `active:scale-95` 或 `active:opacity-70`。
-- **導航狀態**: 當前頁面圖標使用品牌色 (Cyan) 並輔以發光指示點。
-- **無障礙**: 確保文字與背景對比度符合 WCAG 2.1 AA 標準。
-
-### I. 分類標識 (Category Tag)
-- **樣式**: 非按鈕設計，強調屬性歸屬感。
-- **結構**: 左側為發光圓點 (`6px`)，右側為文字。
-- **配色**: 文字使用 `var(--tg-cyan)`，圓點使用雙層發光陰影。
-- **字體**: `14px` (text-sm)，`font-semibold`。
-- **互動**: 不可點擊。
-
-### J. 供應商文字 (Provider Text)
-- **樣式**: 藍色/青色文字，用於標識插件或服務的來源。
-- **字體**: `12px` (text-xs)，`font-semibold`。
-- **配色**: 推薦使用 `text-blue-400` 或 `text-cyan-400` 以突出顯示。
-
-### K. 按鈕寬度規範 (Button Width)
-- **主要按鈕 (btn-action)**: 在列表頁面中，水平內邊距推薦使用 `px-8` 以增加觸控面積與視覺份量。
-
-### L. Banner 卡片 (Banner Card)
-- **高度**: `120px`。
-- **背景**: 漸變色背景 `linear-gradient`，疊加 `conic-gradient` 旋轉動畫。
-- **動畫**: 10s 線性無限旋轉。
-
-### M. 模型管理風格 (Model Management Style)
-- **主題色**: 以 Emerald (#00F5A0) 為主色調。
-- **背景**: `radial-gradient` 從頂部 `#064e3b` 向底部黑色過渡。
-- **模型卡片 (Model Card)**: 
-    - 背景: `linear-gradient(180deg, rgba(0, 245, 160, 0.05) 0%, rgba(15, 23, 42, 0.5) 100%)`。
-    - 邊框: `1px solid rgba(0, 245, 160, 0.15)`。
-- **操作按鈕**:
-    - **立即使用 (btn-action-emerald)**: `var(--tg-emerald)` 到 `var(--tg-cyan)` 的漸變，帶有翡翠綠發光陰影。
-    - **查看詳情 (btn-glass-blue)**: `rgba(0, 122, 255, 0.1)` 背景，藍色文字，強調信息屬性。
-- **分類標籤**: 激活態使用 `var(--tg-emerald)` 色彩與陰影。
-- **LOGO 佔位符**: 採用 `var(--tg-emerald)` 到 `var(--tg-cyan)` 的 135 度漸變。
+## 5. 交互原則 (UX Principles)
+- **觸控反饋**: 所有可點擊元素必須具備 `:active` 縮放反饋。
+- **視覺一致性**: 凡涉及「查看詳情」與「立即使用」的組合，必須保持左側 `btn-glass` 右側 `btn-action` 的網格佈局。
+- **色彩語義**: 嚴格遵守 Cyan 用於「操作/激活」，Emerald 用於「成功/資源管理」。

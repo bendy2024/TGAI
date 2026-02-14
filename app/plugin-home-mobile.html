@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --border-white: rgba(255, 255, 255, 0.12);
+            --border-white: rgba(255, 255, 255, 0.1);
             --tg-cyan: #00F2FF;
             --tg-emerald: #00F5A0;
             --tg-bg: #010204;
@@ -120,14 +120,50 @@
             box-shadow: 0 0 10px var(--tg-cyan);
         }
 
-        .nav-wrapper { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 40px); max-width: 400px; z-index: 100; }
-        .main-nav { height: var(--nav-height); background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 36px; display: flex; align-items: center; justify-content: space-around; padding: 0 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: rgba(255,255,255,0.4); transition: all 0.3s ease; }
-        .nav-item.active { color: var(--tg-cyan); }
-        .nav-label { font-size: 11px; }
+        .bottom-nav {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 40px);
+            max-width: 400px;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 32px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 100;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-item.active {
+            color: var(--tg-cyan);
+        }
+        .nav-label { font-weight: 500; }
 
-        .banner-card { height: 120px; background: linear-gradient(135deg, rgba(0, 242, 255, 0.1) 0%, rgba(0, 245, 160, 0.1) 100%); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-        .banner-card::before { content: ''; position: absolute; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, var(--tg-cyan), transparent, var(--tg-emerald), transparent); animation: rotate 10s linear infinite; opacity: 0.1; }
+        .banner-card { 
+            height: 160px; 
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        .banner-card::before { content: ''; position: absolute; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, var(--tg-cyan), transparent, var(--tg-emerald), transparent); animation: rotate 10s linear infinite; opacity: 0.15; }
         @keyframes rotate { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
 
         /* 篩選彈窗樣式 */
@@ -244,13 +280,8 @@
 <body>
     <div class="app-container" data-page="plugin-home">
         <!-- 頂部導航 -->
-        <header class="safe-area-top px-5 py-4 flex items-center justify-between" data-section="header">
-            <button class="w-11 h-11 flex items-center justify-center rounded-full bg-white/5 active:bg-white/10">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
-            </button>
+        <header class="safe-area-top px-5 py-4 flex items-center justify-between sticky top-0 z-50 bg-[#010204]/60 backdrop-blur-xl" data-section="header">
+            <div class="text-[14px] font-black tracking-[0.2em] text-white">TGAI</div>
             <div class="search-bar">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="2" class="mr-2">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -258,12 +289,12 @@
                 </svg>
                 <input type="text" placeholder="搜索 插件" class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-white/40">
             </div>
-            <div class="relative">
-                <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/10">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
-                </div>
-                <div class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-red-500 rounded-full border-2 border-[#010204]"></div>
-            </div>
+            <a href="user-center-mobile.html" class="relative">
+                 <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/10">
+                     <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+                 </div>
+                 <div class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-cyan-500 rounded-full border-2 border-[#010204] shadow-[0_0_8px_rgba(0,242,255,0.5)]"></div>
+             </a>
         </header>
 
         <!-- Banner 區域 -->
@@ -286,6 +317,12 @@
                     <button class="category-tab">效率工具</button>
                     <button class="category-tab">學習教育</button>
                 </div>
+                <button class="flex items-center gap-1 ml-4 pl-4 border-l border-white/10 text-white/60 text-sm font-medium h-[44px]">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                    </svg>
+                    <span>篩選</span>
+                </button>
             </div>
         </section>
 
@@ -305,9 +342,9 @@
                             <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
                         </div>
                         <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="tag">商業服務</span>
-                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        <div class="mt-5 grid grid-cols-2 gap-3">
+                            <a href="plugin-detail-mobile.html" class="btn-glass text-sm">詳情</a>
+                            <button class="btn-action text-sm">立即使用</button>
                         </div>
                     </div>
                 </div>
@@ -327,9 +364,9 @@
                             <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
                         </div>
                         <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="tag">商業服務</span>
-                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        <div class="mt-5 grid grid-cols-2 gap-3">
+                            <a href="plugin-detail-mobile.html" class="btn-glass text-sm">詳情</a>
+                            <button class="btn-action text-sm">立即使用</button>
                         </div>
                     </div>
                 </div>
@@ -349,9 +386,9 @@
                             <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
                         </div>
                         <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="tag">商業服務</span>
-                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        <div class="mt-5 grid grid-cols-2 gap-3">
+                            <a href="plugin-detail-mobile.html" class="btn-glass text-sm">詳情</a>
+                            <button class="btn-action text-sm">立即使用</button>
                         </div>
                     </div>
                 </div>
@@ -371,9 +408,9 @@
                             <span class="text-xs text-blue-400 font-semibold">阿里云百煉</span>
                         </div>
                         <p class="text-sm text-white/60 mt-1 line-clamp-2">Qwen3 支持思考/非思考雙模式應對不同需求，支持119種語言，並顯著強化了 Agent。</p>
-                        <div class="mt-4 flex items-center justify-between">
-                            <span class="tag">商業服務</span>
-                            <a href="plugin-detail-mobile.html" class="btn-action px-8 text-sm">查看詳情</a>
+                        <div class="mt-5 grid grid-cols-2 gap-3">
+                            <a href="plugin-detail-mobile.html" class="btn-glass text-sm">詳情</a>
+                            <button class="btn-action text-sm">立即使用</button>
                         </div>
                     </div>
                 </div>
@@ -381,46 +418,44 @@
         </main>
 
         <!-- 底部導航 -->
-        <div class="nav-wrapper">
-            <nav class="main-nav">
-                <a href="agent-home-mobile.html" class="nav-item">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                        <path d="M2 17l10 5 10-5"></path>
-                        <path d="M2 12l10 5 10-5"></path>
-                    </svg>
-                    <span class="nav-label">Agent</span>
-                </a>
-                <a href="#" class="nav-item active">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                    </svg>
-                    <span class="nav-label">插件</span>
-                </a>
-                <a href="model-home-mobile.html" class="nav-item">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    <span class="nav-label">模型</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 20l-7-7 7-7"></path>
-                        <path d="M12 20l-7-7 7-7"></path>
-                    </svg>
-                    <span class="nav-label">快訊</span>
-                </a>
-                <a href="#" class="nav-item">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                        <line x1="9" y1="3" x2="9" y2="21"></line>
-                    </svg>
-                    <span class="nav-label">文化</span>
-                </a>
-            </nav>
-        </div>
+        <nav class="bottom-nav">
+            <a href="agent-home-mobile.html" class="nav-item">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
+                </svg>
+                <span class="nav-label">Agent</span>
+            </a>
+            <a href="plugin-home-mobile.html" class="nav-item active">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                </svg>
+                <span class="nav-label">插件</span>
+            </a>
+            <a href="model-home-mobile.html" class="nav-item">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span class="nav-label">模型</span>
+            </a>
+            <a href="news-home-mobile.html" class="nav-item">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 20l-7-7 7-7"></path>
+                    <path d="M12 20l-7-7 7-7"></path>
+                </svg>
+                <span class="nav-label">快訊</span>
+            </a>
+            <a href="culture-home-mobile.html" class="nav-item">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="9" y1="3" x2="9" y2="21"></line>
+                </svg>
+                <span class="nav-label">文化</span>
+            </a>
+        </nav>
     </div>
 </body>
 </html>
